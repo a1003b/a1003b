@@ -199,7 +199,7 @@
         }
         #login-screen { display: flex; }
         #main-app-container { display: none; }
-        .login-code-input { letter-spacing: .18em; }
+        .login-code-input { letter-spacing: .18em; text-transform: uppercase; }
         @media print { #login-screen { display:none !important; } }
     </style>
 </head>
@@ -217,7 +217,7 @@
             </div>
             <div class="p-5 space-y-4">
                 <div><label for="login-role" class="block text-xs font-black text-slate-700 mb-1.5">نوع الدخول</label><select id="login-role" class="w-full bg-white border border-slate-200 rounded-2xl p-3 text-sm font-bold outline-none focus:border-indigo-500"><option value="student">الطالب</option><option value="teacher">الأستاذ</option></select></div>
-                <div><label for="login-code" class="block text-xs font-black text-slate-700 mb-1.5">رمز الدخول</label><input id="login-code" type="password" autocomplete="off" inputmode="text" placeholder="أدخل الرمز" class="login-code-input w-full bg-white border border-slate-200 rounded-2xl p-3.5 text-center text-lg font-black outline-none focus:border-indigo-500" onkeydown="if(event.key==='Enter') loginWithCode()"></div>
+                <div><label for="login-code" class="block text-xs font-black text-slate-700 mb-1.5">رمز الدخول</label><input id="login-code" type="password" autocomplete="off" inputmode="text" maxlength="6" placeholder="أدخل الرمز" class="login-code-input w-full bg-white border border-slate-200 rounded-2xl p-3.5 text-center text-lg font-black outline-none focus:border-indigo-500" onkeydown="if(event.key==='Enter') loginWithCode()"></div>
                 <p id="login-error" class="hidden text-xs font-bold text-rose-600 bg-rose-50 border border-rose-100 rounded-xl p-2.5"></p>
                 <button type="button" onclick="loginWithCode()" class="w-full bg-slate-900 text-amber-400 py-3 rounded-2xl font-black text-sm shadow-lg hover:bg-slate-800 transition-colors"><i class="fa-solid fa-right-to-bracket ml-2"></i>دخول</button>
                 <div class="border-t border-slate-200 pt-4 text-center"><p class="text-[11px] text-slate-500 font-bold">مدرس المادة : محمد خضر بجاي العكيلي</p><p class="text-[9px] text-slate-400 mt-1">تُحفظ البيانات على الجهاز وتتم مزامنتها مع قاعدة البيانات عند الاتصال</p></div>
@@ -578,6 +578,8 @@
         let currentModalType = "";
         let currentAttendanceMap = {};
         let currentLoadedAttendanceStudents = [];
+        let currentDailyGradeEditContext = null;
+        let activeStudentBehaviorCard = 'behavior';
 
         function normalizeAppState() {
             if (!appState || typeof appState !== 'object') return;
@@ -1865,6 +1867,11 @@
                     </div>
 
                     <div class="flex gap-2 mb-3">
+                        <input id="att-student-search" type="search" onkeydown="if(event.key==='Enter') searchAttendanceStudent()" placeholder="ابحث عن اسم طالب..." class="min-w-0 flex-1 bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-[10px] font-bold outline-none focus:border-indigo-400">
+                        <button type="button" onclick="searchAttendanceStudent()" class="shrink-0 bg-indigo-50 text-indigo-700 border border-indigo-100 rounded-xl px-3 py-2 text-[10px] font-black"><i class="fa-solid fa-magnifying-glass ml-1"></i>بحث عن طالب</button>
+                    </div>
+                    <p id="att-student-search-result" class="text-[9px] text-slate-400 mb-2"></p>
+                    <div class="flex gap-2 mb-3">
                         <button type="button" onclick="setAllAttendanceStatus('present')" class="flex-1 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border border-emerald-200 py-1.5 rounded-xl text-[10px] font-black transition-all flex items-center justify-center gap-1 active:scale-95">
                             <i class="fa-solid fa-check-double"></i>
                             <span>تحديد الكل حاضر</span>
@@ -1881,7 +1888,7 @@
             students.forEach((st, idx) => {
                 let status = currentAttendanceMap[st.id] || 'present';
                 listHtml += `
-                    <div class="flex items-center justify-between bg-slate-50/80 p-2 rounded-2xl border border-slate-100">
+                    <div id="attendance-student-row-${String(st.id).replace(/[^\w-]/g, '_')}" data-student-name="${escapeHtml(st.name)}" class="attendance-student-row flex items-center justify-between bg-slate-50/80 p-2 rounded-2xl border border-slate-100">
                         <div class="flex items-center gap-2">
                             <span class="w-6 h-6 rounded-full bg-slate-200 text-slate-700 text-[10px] font-bold flex items-center justify-center">${idx + 1}</span>
                             <div>
@@ -1907,6 +1914,26 @@
             `;
 
             container.innerHTML = listHtml;
+        }
+
+        function searchAttendanceStudent() {
+            const input = document.getElementById('att-student-search');
+            const query = normalizeStudentSearchText(input ? input.value : '');
+            const rows = Array.from(document.querySelectorAll('#attendance-rows-box .attendance-student-row'));
+            let visible = 0;
+            rows.forEach(row => {
+                const name = normalizeStudentSearchText(row.getAttribute('data-student-name') || '');
+                const match = !query || name.includes(query);
+                row.classList.toggle('hidden', !match);
+                if (match) visible++;
+            });
+            const result = document.getElementById('att-student-search-result');
+            if (result) result.textContent = query ? `النتائج المطابقة: ${visible} من ${rows.length}` : `عدد الطلبة: ${rows.length}`;
+            if (query && visible === 0) showToast('لم يتم العثور على طالب بهذا الاسم في الجلسة الحالية', 'error');
+            else if (query && visible === 1) {
+                const row = rows.find(item => !item.classList.contains('hidden'));
+                if (row) row.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
         }
 
         function setSingleAttendanceStatus(studentId, status) {
@@ -4959,7 +4986,10 @@
 
         function closeModal() {
             const modalSubmit = document.getElementById('modal-submit-btn');
-            if (modalSubmit) modalSubmit.style.display = '';
+            if (modalSubmit) {
+                modalSubmit.style.display = '';
+                modalSubmit.innerHTML = '<i class="fa-solid fa-check text-xs"></i><span>تأكيد الحفظ</span>';
+            }
             const modal = document.getElementById('action-modal');
             const box = document.getElementById('modal-box');
             modal.classList.add('opacity-0', 'pointer-events-none');
@@ -4967,9 +4997,11 @@
             box.classList.add('scale-95');
             currentModalType = '';
             currentGradeEditContext = null;
+            currentDailyGradeEditContext = null;
         }
 
         function handleModalSubmit() {
+            if (currentModalType === 'edit_daily_grade') { saveEditedDailyGrade(); return; }
             if (currentModalType === 'edit_grade_record') { saveGradeEditor(); return; }
             if (currentModalType === 'reset_teacher_password') { saveTeacherPassword(); return; }
             if (currentModalType === 'add_class') {
@@ -5175,24 +5207,33 @@
 
         // --- Login, student portal, daily grades, messaging and objections ---
         function randomStudentLoginCode() {
-            const letters = 'ABCDEFGHJKLMNPQRSTUVWXYZ', digits = '23456789';
-            const alphabet = letters + digits;
-            const parts = [letters[Math.floor(Math.random() * letters.length)], digits[Math.floor(Math.random() * digits.length)]];
-            while (parts.length < 6) parts.push(alphabet[Math.floor(Math.random() * alphabet.length)]);
-            for (let i = parts.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [parts[i], parts[j]] = [parts[j], parts[i]]; }
-            return parts.join('');
+            // الرمز يتكون من حرفين لاتينيين ورقمين، بترتيب مختلط.
+            const letters = 'ABCDEFGHJKLMNPQRSTUVWXYZ';
+            const digits = '0123456789';
+            const chars = [
+                letters[Math.floor(Math.random() * letters.length)],
+                letters[Math.floor(Math.random() * letters.length)],
+                digits[Math.floor(Math.random() * digits.length)],
+                digits[Math.floor(Math.random() * digits.length)]
+            ];
+            for (let i = chars.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [chars[i], chars[j]] = [chars[j], chars[i]];
+            }
+            return chars.join('');
         }
         function createUniqueStudentCode(exceptId = null) {
             let code = randomStudentLoginCode(), attempts = 0;
-            while (appState.students.some(st => String(st.id) !== String(exceptId) && String(st.loginCode || '').toUpperCase() === code) && attempts++ < 100) code = randomStudentLoginCode();
+            while (appState.students.some(st => String(st.id) !== String(exceptId) && String(st.loginCode || '').toUpperCase() === code) && attempts++ < 1000) code = randomStudentLoginCode();
             return code;
         }
         function ensureStudentLoginCodes() {
             if (!appState || !Array.isArray(appState.students)) return;
             const seen = new Set();
+            const validCode = code => /^(?=(?:.*[A-Z]){2})(?=(?:.*[0-9]){2})[A-Z0-9]{4}$/.test(code);
             appState.students.forEach(st => {
                 const code = String(st.loginCode || '').trim().toUpperCase();
-                if (!/^[A-Z0-9]{6}$/.test(code) || !/[A-Z]/.test(code) || !/[0-9]/.test(code) || seen.has(code)) st.loginCode = createUniqueStudentCode(st.id);
+                if (!validCode(code) || seen.has(code)) st.loginCode = createUniqueStudentCode(st.id);
                 else st.loginCode = code;
                 seen.add(st.loginCode);
             });
@@ -5216,7 +5257,7 @@
             if (role === 'teacher' && code === String(appState.teacherPassword || '202026')) {
                 activeRole = 'teacher'; loggedStudentId = null;
             } else if (role === 'student') {
-                const student = appState.students.find(st => String(st.loginCode || '').toUpperCase() === code && code.length === 6);
+                const student = appState.students.find(st => String(st.loginCode || '').toUpperCase() === code && code.length === 4 && /^(?=(?:.*[A-Z]){2})(?=(?:.*[0-9]){2})[A-Z0-9]{4}$/.test(code));
                 if (!student) { if(error){error.textContent='رمز الطالب غير صحيح. راجع الأستاذ للحصول على رمز الدخول.';error.classList.remove('hidden');} return; }
                 activeRole = 'student'; loggedStudentId = student.id; activeStudentSection = 'grades';
             } else {
@@ -5271,7 +5312,11 @@
             const body = document.getElementById('modal-body'); if (body && currentModalType === 'manage_registered_students') renderRegisteredStudentsList(body);
         }
         function getStudentForPortal() { return appState.students.find(st => String(st.id) === String(loggedStudentId)); }
-        function setStudentSection(section) { activeStudentSection = section; renderStudentPortal(document.getElementById('app-content')); }
+        function setStudentSection(section) { if (section === 'behavior' && activeStudentSection !== 'behavior') activeStudentBehaviorCard = 'behavior'; activeStudentSection = section; renderStudentPortal(document.getElementById('app-content')); }
+        function setStudentBehaviorCard(card) {
+            activeStudentBehaviorCard = card === 'notes' ? 'notes' : 'behavior';
+            renderStudentPortal(document.getElementById('app-content'));
+        }
         function studentGradeSummary(st) {
             const subjectKeys = st.gradesBySubject && typeof st.gradesBySubject === 'object' ? Object.keys(st.gradesBySubject) : [];
             studentPortalSubjectContext = String(st.subject || subjectKeys[0] || 'all');
@@ -5309,8 +5354,20 @@
                 const logs = Array.isArray(st.absenceLog)?st.absenceLog.slice().sort((a,b)=>String(b.date||'').localeCompare(String(a.date||''))):[];
                 content = `<div class="grid grid-cols-3 gap-2 mb-3"><div class="bg-white rounded-2xl border p-3 text-center"><p class="text-[10px] text-slate-500">الحضور</p><b class="text-xl text-emerald-700">${Number(st.attendanceCount)||0}</b></div><div class="bg-white rounded-2xl border p-3 text-center"><p class="text-[10px] text-slate-500">الغياب</p><b class="text-xl text-rose-700">${Number(st.absenceCount)||0}</b></div><div class="bg-white rounded-2xl border p-3 text-center"><p class="text-[10px] text-slate-500">الإجازات</p><b class="text-xl text-amber-700">${Number(st.excusedCount)||0}</b></div></div><div class="bg-white rounded-2xl p-3 border border-slate-200"><h4 class="font-black text-xs mb-2">سجل الغياب والإجازات</h4>${logs.length?logs.map(log=>`<div class="flex justify-between border-b last:border-0 py-2 text-[10px]"><span>${escapeHtml(log.date||'')}</span><b class="${log.status==='مجاز'?'text-amber-700':'text-rose-700'}">${escapeHtml(log.status||'غائب')}</b></div>`).join(''):'<p class="text-xs text-slate-400 text-center py-3">لا توجد سجلات غياب مسجلة</p>'}</div>`;
             } else if (activeStudentSection === 'behavior') {
-                const logs = Array.isArray(st.behaviorLog)?st.behaviorLog.slice().sort((a,b)=>String(b.date||'').localeCompare(String(a.date||''))):[];
-                content = `<div class="bg-white rounded-2xl border border-slate-200 p-4 mb-3"><p class="text-[10px] text-slate-500 font-bold">التقييم السلوكي الحالي</p><h3 class="text-xl font-black text-indigo-800 mt-1">${escapeHtml(st.behavior||'غير مسجل')}</h3><div class="border-t mt-3 pt-3"><p class="text-[10px] text-slate-500 font-bold">ملاحظة الأستاذ</p><p class="text-sm font-bold text-slate-800 mt-1">${escapeHtml(st.note||'لا توجد ملاحظات')}</p></div></div><div class="bg-white rounded-2xl border p-3"><h4 class="font-black text-xs mb-2">سجل المتابعة</h4>${logs.length?logs.map(log=>`<div class="border-b last:border-0 py-2 text-[10px]"><div class="flex justify-between"><b>${escapeHtml(log.mark||'متابعة')}</b><span>${escapeHtml(log.date||'')}</span></div><p class="text-slate-500 mt-1">${escapeHtml(log.subject||'')} ${escapeHtml(log.stage||'')}</p></div>`).join(''):'<p class="text-xs text-slate-400 text-center py-3">لا توجد علامات متابعة مسجلة</p>'}</div>`;
+                const logs = Array.isArray(st.behaviorLog) ? st.behaviorLog.slice().sort((a,b)=>String(b.date||'').localeCompare(String(a.date||''))) : [];
+                const selectedBehavior = activeStudentBehaviorCard === 'notes' ? 'notes' : 'behavior';
+                const behaviorCardClass = selectedBehavior === 'behavior' ? 'border-indigo-300 bg-indigo-50 text-indigo-800' : 'border-slate-200 bg-white text-slate-600';
+                const notesCardClass = selectedBehavior === 'notes' ? 'border-amber-300 bg-amber-50 text-amber-800' : 'border-slate-200 bg-white text-slate-600';
+                const behaviorDetails = `<div class="bg-white rounded-2xl border border-indigo-100 p-4"><p class="text-[10px] text-slate-500 font-bold">التقييم السلوكي الحالي</p><h3 class="text-xl font-black text-indigo-800 mt-1">${escapeHtml(st.behavior || 'غير مسجل')}</h3><div class="mt-3 pt-3 border-t border-slate-100"><h4 class="font-black text-xs mb-2">سجل السلوك والمتابعة</h4>${logs.length ? logs.map(log => `<div class="border-b last:border-0 py-2 text-[10px]"><div class="flex justify-between gap-2"><b>${escapeHtml(log.mark || 'متابعة')}</b><span>${escapeHtml(log.date || '')}</span></div><p class="text-slate-500 mt-1">${escapeHtml(log.subject || '')} ${escapeHtml(log.stage || '')}</p></div>`).join('') : '<p class="text-xs text-slate-400 text-center py-3">لا توجد علامات سلوك مسجلة</p>'}</div></div>`;
+                const noteEntries = [];
+                if (String(st.note || '').trim()) noteEntries.push({ text: String(st.note), date: String(st.noteDate || st.noteUpdatedAt || ''), title: 'ملاحظة الأستاذ' });
+                if (Array.isArray(st.notes)) st.notes.forEach(item => {
+                    const text = typeof item === 'string' ? item : String(item && (item.text || item.note || item.message) || '');
+                    if (text.trim()) noteEntries.push({ text, date: String(item && (item.date || item.createdAt) || ''), title: 'ملاحظة' });
+                });
+                logs.filter(log => String(log.note || '').trim()).forEach(log => noteEntries.push({ text: String(log.note), date: String(log.date || ''), title: 'ملاحظة متابعة' }));
+                const notesDetails = `<div class="bg-white rounded-2xl border border-amber-100 p-4"><h4 class="font-black text-sm text-amber-800 mb-3">ملاحظات الأستاذ عن الطالب</h4>${noteEntries.length ? noteEntries.map(note => `<article class="rounded-xl bg-amber-50/70 border border-amber-100 p-3 mb-2 last:mb-0"><div class="flex justify-between gap-2"><b class="text-[10px] text-amber-800">${escapeHtml(note.title)}</b><span class="text-[9px] text-slate-400">${escapeHtml(note.date)}</span></div><p class="text-xs font-bold text-slate-700 mt-2 whitespace-pre-wrap">${escapeHtml(note.text)}</p></article>`).join('') : '<p class="text-xs text-slate-400 text-center py-4">لا توجد ملاحظات مسجلة عنك حالياً</p>'}</div>`;
+                content = `<div class="grid grid-cols-2 gap-2 mb-3"><button type="button" onclick="setStudentBehaviorCard('behavior')" class="rounded-2xl border p-3 text-right transition-colors ${behaviorCardClass}"><span class="w-9 h-9 rounded-xl bg-indigo-100 text-indigo-700 flex items-center justify-center mb-2"><i class="fa-solid fa-star"></i></span><b class="block text-xs font-black">السلوك</b><span class="block text-[9px] mt-1 opacity-80">عرض تقييم السلوك</span></button><button type="button" onclick="setStudentBehaviorCard('notes')" class="rounded-2xl border p-3 text-right transition-colors ${notesCardClass}"><span class="w-9 h-9 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center mb-2"><i class="fa-solid fa-note-sticky"></i></span><b class="block text-xs font-black">الملاحظات</b><span class="block text-[9px] mt-1 opacity-80">عرض ملاحظات الأستاذ</span></button></div>${selectedBehavior === 'notes' ? notesDetails : behaviorDetails}`;
             } else if (activeStudentSection === 'daily') {
                 const rows = (appState.dailyGrades||[]).filter(r=>String(r.studentId)===String(st.id)).sort((a,b)=>String(b.date||'').localeCompare(String(a.date||'')));
                 content = `<div class="bg-white rounded-2xl border p-3"><h3 class="font-black text-sm mb-3">درجات اليومي</h3>${rows.length?`<div class="space-y-2">${rows.map(r=>`<div class="flex justify-between items-center p-3 rounded-xl bg-slate-50 border"><div><b class="text-xs">${r.term==='term1'?'الفصل الأول':'الفصل الثاني'} · الشهر ${r.month==='1'?'الأول':'الثاني'}</b><p class="text-[9px] text-slate-500 mt-1">${escapeHtml(r.date||'')}</p></div><strong class="text-lg text-indigo-800">${escapeHtml(r.mark)} / ${escapeHtml(r.maxMark)}</strong></div>`).join('')}</div>`:'<p class="text-xs text-slate-400 text-center py-5">لم تُسجل درجات يومي لك بعد</p>'}</div>`;
@@ -5376,25 +5433,113 @@
             container.innerHTML=`<div class="space-y-3"><div class="bg-gradient-to-r from-slate-900 to-indigo-950 text-white rounded-3xl p-4"><div class="flex items-center gap-3"><div class="w-11 h-11 rounded-2xl bg-amber-400/15 text-amber-300 flex items-center justify-center text-xl"><i class="fa-solid fa-clipboard-check"></i></div><div><h3 class="font-black text-sm">درجة اليومي</h3><p class="text-[10px] text-slate-300 mt-1">حدد الفصل والشهر والدرجة القصوى ثم أدخل درجات الطلبة</p></div></div></div><div class="bg-white border border-slate-200 rounded-3xl p-3.5 space-y-3"><div><label class="block text-[10px] font-black mb-1">الصف والشعبة</label><select id="daily-class-select" onchange="renderDailyGradeStudents()" class="w-full bg-slate-50 border rounded-xl p-2.5 text-xs font-bold">${classOptions}</select></div><div class="grid grid-cols-2 gap-2"><div><label class="block text-[10px] font-black mb-1">الفصل</label><select id="daily-term-select" onchange="renderDailyGradeStudents()" class="w-full bg-slate-50 border rounded-xl p-2 text-xs font-bold"><option value="term1">الفصل الأول</option><option value="term2">الفصل الثاني</option></select></div><div><label class="block text-[10px] font-black mb-1">الشهر</label><select id="daily-month-select" onchange="renderDailyGradeStudents()" class="w-full bg-slate-50 border rounded-xl p-2 text-xs font-bold"><option value="1">الأول</option><option value="2">الثاني</option></select></div><div class="col-span-2"><label class="block text-[10px] font-black mb-1">تاريخ درجة اليومي</label><input id="daily-date-select" type="date" value="${new Date().toISOString().slice(0,10)}" class="w-full bg-slate-50 border rounded-xl p-2 text-xs font-bold"></div><div class="col-span-2"><label class="block text-[10px] font-black mb-1">الدرجة القصوى</label><select id="daily-max-select" onchange="renderDailyGradeStudents()" class="w-full bg-slate-50 border rounded-xl p-2 text-xs font-bold"><option value="5">5 درجات</option><option value="10">10 درجات</option></select></div></div></div><div id="daily-grade-students" class="space-y-2"></div></div>`;
             renderDailyGradeStudents();
         }
-        function getDailyGradeRecord(studentId, term, month) { return (appState.dailyGrades||[]).find(r=>String(r.studentId)===String(studentId)&&r.term===term&&String(r.month)===String(month)); }
+        function getDailyGradeRecord(studentId, term, month) {
+            return (appState.dailyGrades || []).find(r => String(r.studentId) === String(studentId) && r.term === term && String(r.month) === String(month));
+        }
         function renderDailyGradeStudents() {
-            const box=document.getElementById('daily-grade-students'); if(!box)return;
-            const classVal=document.getElementById('daily-class-select')?.value||'all'; const term=document.getElementById('daily-term-select')?.value||'term1'; const month=document.getElementById('daily-month-select')?.value||'1'; const max=Number(document.getElementById('daily-max-select')?.value||5);
-            const cls=parseClassSelection(classVal);
-            let students=appState.students.filter(st=>classVal==='all'||(normalizeAcademicText(st.class)===normalizeAcademicText(cls.name)&&normalizeAcademicText(st.section)===normalizeAcademicText(cls.section)&&normalizeAcademicText(st.studyType||'صباحي')===normalizeAcademicText(cls.studyType||'صباحي')));
-            students=sortStudentsAlphabetically(students);
-            if(!students.length){box.innerHTML='<div class="bg-white rounded-2xl p-5 text-center text-xs text-slate-400 border">لا يوجد طلبة في هذا الصف والشعبة</div>';return;}
-            box.innerHTML=`<div class="flex justify-between items-center px-1"><h3 class="text-xs font-black text-slate-700">قائمة الطلبة</h3><span class="text-[9px] text-slate-400">${students.length} طالب</span></div>`+students.map((st,i)=>{const r=getDailyGradeRecord(st.id,term,month);return `<article class="bg-white border border-slate-200 rounded-2xl p-3 flex items-center gap-3"><div class="w-8 h-8 rounded-xl bg-slate-100 text-slate-600 flex items-center justify-center text-xs font-black">${i+1}</div><div class="min-w-0 flex-1"><h4 class="text-xs font-black text-slate-800">${escapeHtml(st.name)}</h4><p class="text-[9px] text-slate-400 mt-1">${escapeHtml(st.class)} · ${escapeHtml(st.section)}</p></div><div class="w-24"><input id="daily-grade-${String(st.id).replace(/[^\w-]/g,'_')}" data-student-id="${escapeHtml(st.id)}" type="number" min="0" max="${max}" step="0.5" value="${r?escapeHtml(r.mark):''}" placeholder="0–${max}" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2 text-center text-sm font-black outline-none"><p class="text-[8px] text-center text-slate-400 mt-1">من ${max}</p></div><button onclick="saveDailyGrade('${String(st.id).replace(/'/g,'')}')" class="w-9 h-9 bg-slate-900 text-amber-400 rounded-xl text-xs"><i class="fa-solid fa-floppy-disk"></i></button></article>`;}).join('');
+            const box = document.getElementById('daily-grade-students'); if (!box) return;
+            const classVal = document.getElementById('daily-class-select')?.value || 'all';
+            const term = document.getElementById('daily-term-select')?.value || 'term1';
+            const month = document.getElementById('daily-month-select')?.value || '1';
+            const max = Number(document.getElementById('daily-max-select')?.value || 5);
+            const cls = parseClassSelection(classVal);
+            let students = appState.students.filter(st => classVal === 'all' || (normalizeAcademicText(st.class) === normalizeAcademicText(cls.name) && normalizeAcademicText(st.section) === normalizeAcademicText(cls.section) && normalizeAcademicText(st.studyType || 'صباحي') === normalizeAcademicText(cls.studyType || 'صباحي')));
+            students = sortStudentsAlphabetically(students);
+            if (!students.length) { box.innerHTML = '<div class="bg-white rounded-2xl p-5 text-center text-xs text-slate-400 border">لا يوجد طلبة في هذا الصف والشعبة</div>'; return; }
+            box.innerHTML = `<div class="flex justify-between items-center px-1"><h3 class="text-xs font-black text-slate-700">قائمة الطلبة</h3><span class="text-[9px] text-slate-400">${students.length} طالب</span></div>` + students.map((st, i) => {
+                const r = getDailyGradeRecord(st.id, term, month);
+                const safeId = String(st.id).replace(/[^\w-]/g, '_');
+                const quotedId = String(st.id).replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+                return `<article class="bg-white border border-slate-200 rounded-2xl p-3"><div class="flex items-center gap-3"><div class="w-8 h-8 shrink-0 rounded-xl bg-slate-100 text-slate-600 flex items-center justify-center text-xs font-black">${i + 1}</div><div class="min-w-0 flex-1"><h4 class="text-xs font-black text-slate-800">${escapeHtml(st.name)}</h4><p class="text-[9px] text-slate-400 mt-1">${escapeHtml(st.class)} · ${escapeHtml(st.section)} · ${escapeHtml(st.studyType || 'صباحي')}</p><p class="text-[9px] mt-1 ${r ? 'text-emerald-700' : 'text-slate-400'}">${r ? 'درجة محفوظة' : 'لم تُحفظ درجة بعد'}</p></div><div class="w-20 shrink-0"><input id="daily-grade-${safeId}" data-student-id="${escapeHtml(st.id)}" type="number" inputmode="decimal" min="0" max="${max}" step="0.5" value="${r ? escapeHtml(r.mark) : ''}" placeholder="0–${max}" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2 text-center text-sm font-black outline-none"><p class="text-[8px] text-center text-slate-400 mt-1">من ${max}</p></div></div><div class="flex flex-wrap items-center justify-end gap-1.5 mt-3 pt-2 border-t border-slate-100"><button type="button" onclick="saveDailyGrade('${quotedId}')" class="flex items-center gap-1 bg-slate-900 text-amber-400 rounded-xl px-2.5 py-2 text-[10px] font-black"><i class="fa-solid fa-floppy-disk"></i><span>حفظ</span></button><button type="button" onclick="editDailyGrade('${quotedId}')" class="flex items-center gap-1 bg-sky-50 text-sky-700 border border-sky-100 rounded-xl px-2.5 py-2 text-[10px] font-black"><i class="fa-solid fa-pen-to-square"></i><span>تعديل</span></button><button type="button" onclick="deleteDailyGrade('${quotedId}')" class="flex items-center gap-1 bg-rose-50 text-rose-700 border border-rose-100 rounded-xl px-2.5 py-2 text-[10px] font-black"><i class="fa-solid fa-trash-can"></i><span>حذف</span></button><button type="button" onclick="viewDailyGradeDetails('${quotedId}')" class="flex items-center gap-1 bg-indigo-50 text-indigo-700 border border-indigo-100 rounded-xl px-2.5 py-2 text-[10px] font-black"><i class="fa-solid fa-eye"></i><span>عرض</span></button></div></article>`;
+            }).join('');
         }
         function saveDailyGrade(studentId) {
-            const st=appState.students.find(s=>String(s.id)===String(studentId)); if(!st)return;
-            const inputId='daily-grade-'+String(st.id).replace(/[^\w-]/g,'_'); const input=document.getElementById(inputId); const mark=String(input?.value??'').trim();
-            const term=document.getElementById('daily-term-select')?.value||'term1'; const month=document.getElementById('daily-month-select')?.value||'1'; const max=Number(document.getElementById('daily-max-select')?.value||5);
-            if(mark===''||!Number.isFinite(Number(mark))||Number(mark)<0||Number(mark)>max){showToast(`أدخل درجة من 0 إلى ${max}`,'error');return;}
-            const selectedDate=document.getElementById('daily-date-select')?.value||new Date().toISOString().slice(0,10); const data={studentId:st.id,studentName:st.name,class:st.class,section:st.section,studyType:st.studyType||'صباحي',term,month,maxMark:max,mark:Number(mark),date:selectedDate};
-            const oldIndex=(appState.dailyGrades||[]).findIndex(r=>String(r.studentId)===String(st.id)&&r.term===term&&String(r.month)===String(month));
-            if(oldIndex>=0)appState.dailyGrades[oldIndex]=data;else appState.dailyGrades.push(data);
+            const st = appState.students.find(s => String(s.id) === String(studentId)); if (!st) return;
+            const inputId = 'daily-grade-' + String(st.id).replace(/[^\w-]/g, '_');
+            const input = document.getElementById(inputId);
+            const mark = String(input?.value ?? '').trim();
+            const term = document.getElementById('daily-term-select')?.value || 'term1';
+            const month = document.getElementById('daily-month-select')?.value || '1';
+            const max = Number(document.getElementById('daily-max-select')?.value || 5);
+            if (mark === '' || !Number.isFinite(Number(mark)) || Number(mark) < 0 || Number(mark) > max) { showToast(`أدخل درجة من 0 إلى ${max}`, 'error'); return; }
+            const selectedDate = document.getElementById('daily-date-select')?.value || new Date().toISOString().slice(0, 10);
+            const data = { studentId: st.id, studentName: st.name, class: st.class, section: st.section, studyType: st.studyType || 'صباحي', term, month, maxMark: max, mark: Number(mark), date: selectedDate };
+            const oldIndex = (appState.dailyGrades || []).findIndex(r => String(r.studentId) === String(st.id) && r.term === term && String(r.month) === String(month));
+            if (oldIndex >= 0) appState.dailyGrades[oldIndex] = { ...appState.dailyGrades[oldIndex], ...data };
+            else appState.dailyGrades.push(data);
             persistLocalState(); showToast('تم حفظ درجة اليومي للطالب'); renderDailyGradeStudents();
+        }
+        function openDailyGradeModal(title, bodyHtml, mode) {
+            const modal = document.getElementById('action-modal');
+            const box = document.getElementById('modal-box');
+            const titleEl = document.getElementById('modal-title');
+            const subtitleEl = document.getElementById('modal-subtitle');
+            const iconEl = document.getElementById('modal-icon');
+            const bodyEl = document.getElementById('modal-body');
+            const submitBtn = document.getElementById('modal-submit-btn');
+            if (!modal || !box || !titleEl || !bodyEl) return;
+            currentModalType = mode;
+            titleEl.textContent = title;
+            if (subtitleEl) subtitleEl.textContent = mode === 'edit_daily_grade' ? 'تعديل درجة الطالب المحفوظة' : 'تفاصيل سجل درجات الطالب';
+            if (iconEl) iconEl.className = 'fa-solid fa-clipboard-check';
+            bodyEl.innerHTML = bodyHtml;
+            if (submitBtn) {
+                if (mode === 'edit_daily_grade') {
+                    submitBtn.style.display = '';
+                    submitBtn.innerHTML = '<i class="fa-solid fa-check text-xs"></i><span>حفظ التعديل</span>';
+                } else submitBtn.style.display = 'none';
+            }
+            modal.classList.remove('opacity-0', 'pointer-events-none');
+            box.classList.remove('scale-95'); box.classList.add('scale-100');
+        }
+        function editDailyGrade(studentId) {
+            const term = document.getElementById('daily-term-select')?.value || 'term1';
+            const month = document.getElementById('daily-month-select')?.value || '1';
+            const record = getDailyGradeRecord(studentId, term, month);
+            if (!record) {
+                const inputId = 'daily-grade-' + String(studentId).replace(/[^\w-]/g, '_');
+                const input = document.getElementById(inputId);
+                if (input) { input.focus(); input.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
+                showToast('لا توجد درجة محفوظة للتعديل؛ أدخل الدرجة ثم اضغط حفظ', 'error');
+                return;
+            }
+            const st = appState.students.find(s => String(s.id) === String(studentId));
+            currentDailyGradeEditContext = { studentId: String(studentId), term: record.term, month: String(record.month) };
+            openDailyGradeModal('تعديل درجة اليومي', `<div class="space-y-3"><div class="bg-slate-50 border rounded-2xl p-3"><p class="text-[10px] text-slate-500">اسم الطالب</p><h4 class="font-black text-sm text-slate-800 mt-1">${escapeHtml(st?.name || record.studentName || '')}</h4><p class="text-[10px] text-slate-500 mt-1">${record.term === 'term1' ? 'الفصل الأول' : 'الفصل الثاني'} · الشهر ${String(record.month) === '1' ? 'الأول' : 'الثاني'}</p></div><div><label class="block text-[10px] font-black mb-1">الدرجة</label><input id="daily-grade-edit-mark" type="number" inputmode="decimal" min="0" max="100" step="0.5" value="${escapeHtml(record.mark)}" class="w-full bg-slate-50 border rounded-xl p-3 text-sm font-black"></div><div><label class="block text-[10px] font-black mb-1">الدرجة القصوى</label><select id="daily-grade-edit-max" class="w-full bg-slate-50 border rounded-xl p-3 text-sm font-bold"><option value="5" ${Number(record.maxMark) === 5 ? 'selected' : ''}>5 درجات</option><option value="10" ${Number(record.maxMark) === 10 ? 'selected' : ''}>10 درجات</option></select></div><div><label class="block text-[10px] font-black mb-1">تاريخ الدرجة</label><input id="daily-grade-edit-date" type="date" value="${escapeHtml(record.date || '')}" class="w-full bg-slate-50 border rounded-xl p-3 text-sm font-bold"></div></div>`, 'edit_daily_grade');
+            const markInput = document.getElementById('daily-grade-edit-mark');
+            const maxInput = document.getElementById('daily-grade-edit-max');
+            if (markInput && maxInput) { markInput.max = maxInput.value; maxInput.onchange = () => { markInput.max = maxInput.value; }; }
+        }
+        function saveEditedDailyGrade() {
+            const context = currentDailyGradeEditContext;
+            if (!context) { showToast('تعذر تحديد الدرجة المراد تعديلها', 'error'); return; }
+            const record = getDailyGradeRecord(context.studentId, context.term, context.month);
+            const markText = String(document.getElementById('daily-grade-edit-mark')?.value ?? '').trim();
+            const maxMark = Number(document.getElementById('daily-grade-edit-max')?.value || 5);
+            const date = String(document.getElementById('daily-grade-edit-date')?.value || '').trim();
+            if (!record) { showToast('لم تعد الدرجة موجودة في السجل', 'error'); closeModal(); return; }
+            if (markText === '' || !Number.isFinite(Number(markText)) || Number(markText) < 0 || Number(markText) > maxMark) { showToast(`أدخل درجة من 0 إلى ${maxMark}`, 'error'); return; }
+            const st = appState.students.find(s => String(s.id) === String(context.studentId));
+            record.mark = Number(markText); record.maxMark = maxMark; record.date = date || record.date || new Date().toISOString().slice(0, 10);
+            if (st) { record.studentName = st.name; record.class = st.class; record.section = st.section; record.studyType = st.studyType || 'صباحي'; }
+            persistLocalState(); closeModal(); showToast('تم تعديل درجة الطالب وحفظها'); renderDailyGradeStudents();
+        }
+        function deleteDailyGrade(studentId) {
+            const term = document.getElementById('daily-term-select')?.value || 'term1';
+            const month = document.getElementById('daily-month-select')?.value || '1';
+            const record = getDailyGradeRecord(studentId, term, month);
+            const st = appState.students.find(s => String(s.id) === String(studentId));
+            if (!record) { showToast('لا توجد درجة محفوظة لهذا الطالب في الاختيار الحالي', 'error'); return; }
+            if (!confirm(`هل تريد حذف درجة اليومي المحفوظة للطالب ${st?.name || record.studentName}؟`)) return;
+            appState.dailyGrades = (appState.dailyGrades || []).filter(r => !(String(r.studentId) === String(studentId) && r.term === term && String(r.month) === String(month)));
+            persistLocalState(); showToast('تم حذف درجة اليومي'); renderDailyGradeStudents();
+        }
+        function viewDailyGradeDetails(studentId) {
+            const st = appState.students.find(s => String(s.id) === String(studentId));
+            if (!st) return;
+            const records = (appState.dailyGrades || []).filter(r => String(r.studentId) === String(studentId)).slice().sort((a, b) => String(b.date || '').localeCompare(String(a.date || '')) || String(a.term).localeCompare(String(b.term)) || String(a.month).localeCompare(String(b.month)));
+            const rows = records.map((r, i) => `<div class="bg-white border border-slate-200 rounded-2xl p-3"><div class="flex items-start justify-between gap-2"><div><p class="text-[9px] text-slate-400">السجل ${i + 1} · ${escapeHtml(r.date || 'التاريخ غير محدد')}</p><h5 class="text-xs font-black text-slate-800 mt-1">${r.term === 'term1' ? 'الفصل الأول' : 'الفصل الثاني'} · الشهر ${String(r.month) === '1' ? 'الأول' : String(r.month) === '2' ? 'الثاني' : escapeHtml(r.month)}</h5><p class="text-[9px] text-slate-500 mt-1">${escapeHtml(r.class || st.class)} · شعبة ${escapeHtml(r.section || st.section)} · ${escapeHtml(r.studyType || st.studyType || 'صباحي')}</p></div><div class="text-center bg-indigo-50 border border-indigo-100 rounded-xl px-3 py-2 shrink-0"><b class="block text-lg text-indigo-800">${escapeHtml(r.mark)}</b><span class="text-[9px] text-slate-500">من ${escapeHtml(r.maxMark)}</span></div></div></div>`).join('');
+            openDailyGradeModal('تفاصيل درجات الطالب', `<div class="bg-gradient-to-r from-slate-900 to-indigo-950 text-white rounded-2xl p-4 mb-3"><p class="text-[10px] text-amber-300">بطاقة الطالب</p><h4 class="text-base font-black mt-1">${escapeHtml(st.name)}</h4><p class="text-[10px] text-slate-300 mt-1">${escapeHtml(st.class)} · شعبة ${escapeHtml(st.section)} · ${escapeHtml(st.studyType || 'صباحي')}</p><div class="mt-3 pt-3 border-t border-white/10 flex justify-between"><span class="text-[10px] text-slate-300">عدد الدرجات المسجلة</span><b class="text-sm">${records.length}</b></div></div><div class="space-y-2">${rows || '<div class="bg-slate-50 border rounded-2xl p-5 text-center text-xs text-slate-400">لا توجد درجات يومي مسجلة لهذا الطالب بعد</div>'}</div>`, 'view_daily_student_grades');
         }
         function selectedDailyGradesForReport() {
             const classVal=document.getElementById('rep-daily-class')?.value||'all'; const term=document.getElementById('rep-daily-term')?.value||'term1'; const month=document.getElementById('rep-daily-month')?.value||'1'; const parsed=parseClassSelection(classVal);
