@@ -4261,6 +4261,14 @@
                             </select>
                         </div>
                         <div>
+                            <label class="block text-[10px] font-bold text-slate-600 mb-1">المادة الدراسية:</label>
+                            <select id="inp-std-subject" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2 text-xs outline-none focus:border-slate-900 font-bold">
+                                <option value="">اختر المادة الدراسية</option>
+                                ${getAllRegisteredSubjectNames().map(subjectName => `<option value="${escapeHtml(subjectName)}">${escapeHtml(subjectName)}</option>`).join('')}
+                            </select>
+                            <p class="text-[9px] text-slate-400 mt-1">تظهر هنا المواد المسجلة في النظام.</p>
+                        </div>
+                        <div>
                             <label class="block text-[10px] font-bold text-slate-600 mb-1">رقم واتساب (اختياري):</label>
                             <input id="inp-std-whatsapp" type="tel" inputmode="tel" placeholder="مثال: 07701234567" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2 text-xs outline-none focus:border-slate-900 font-bold" dir="ltr">
                             <p class="text-[9px] text-slate-400 mt-1">يظهر في قائمة الطلبة فقط ولا يُدرج في التقارير أو أوراق الطباعة.</p>
@@ -4680,6 +4688,7 @@
                             <div class="flex flex-wrap items-center gap-2 mt-0.5 text-[10px] text-slate-500 font-medium">
                                 <span><i class="fa-solid fa-layer-group text-indigo-500"></i> ${escapeHtml(s.class)} (${escapeHtml(s.section)})</span>
                                 <span class="bg-indigo-50 text-indigo-700 border border-indigo-200 px-1.5 py-0.2 rounded-md font-bold">${escapeHtml(s.studyType || 'صباحي')}</span>
+                                ${s.subject ? `<span class="bg-emerald-50 text-emerald-700 border border-emerald-100 px-1.5 py-0.2 rounded-md font-bold"><i class="fa-solid fa-book-open ml-1"></i>${escapeHtml(s.subject)}</span>` : ''}
                                 ${s.whatsapp ? `<button type="button" onclick="openStudentWhatsApp('${String(s.whatsapp).replace(/'/g, '')}')" class="text-emerald-700 font-black hover:text-emerald-900"><i class="fa-brands fa-whatsapp"></i> ${escapeHtml(s.whatsapp)}</button>` : ''}
                                 <div class="mt-1.5 flex flex-wrap items-center gap-1.5">
                                     <span class="text-[9px] font-black text-violet-700 bg-violet-50 border border-violet-100 px-2 py-1 rounded-lg">رمز الدخول: <b dir="ltr">${escapeHtml(s.loginCode || '')}</b></span>
@@ -4794,6 +4803,14 @@
                         </select>
                     </div>
                     <div>
+                        <label class="block text-[10px] font-bold text-slate-600 mb-1">المادة الدراسية:</label>
+                        <select id="edit-std-subject" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2 text-xs font-bold outline-none">
+                            <option value="">اختر المادة الدراسية</option>
+                            ${getAllRegisteredSubjectNames().map(subjectName => `<option value="${escapeHtml(subjectName)}" ${normalizeAcademicText(subjectName) === normalizeAcademicText(s.subject || '') ? 'selected' : ''}>${escapeHtml(subjectName)}</option>`).join('')}
+                        </select>
+                        <p class="text-[9px] text-slate-400 mt-1">تُعرض المواد المسجلة في النظام فقط.</p>
+                    </div>
+                    <div>
                         <label class="block text-[10px] font-bold text-slate-600 mb-1">رقم واتساب (اختياري):</label>
                         <input id="edit-std-whatsapp" type="tel" inputmode="tel" dir="ltr" value="${escapeHtml(s.whatsapp || '')}" placeholder="07701234567" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2 text-xs font-bold outline-none">
                     </div>
@@ -4820,6 +4837,7 @@
             s.class = className.trim();
             s.section = (sectionPart || "أ").trim();
             s.studyType = (studyPart || "صباحي").trim();
+            s.subject = String((document.getElementById('edit-std-subject') || {}).value || '').trim();
             s.whatsapp = String((document.getElementById('edit-std-whatsapp') || {}).value || '').trim();
 
             persistLocalState();
@@ -5030,6 +5048,7 @@
                     class: className, 
                     section: sectionPart || "أ", 
                     studyType: studyPart || "صباحي",
+                    subject: String((document.getElementById('inp-std-subject') || {}).value || '').trim(),
                     year: appState.schoolInfo.year,
                     whatsapp: String((document.getElementById('inp-std-whatsapp') || {}).value || '').trim(),
                     behavior: "جديد",
@@ -5331,15 +5350,34 @@
             studentPortalSubjectContext = null;
             return {term1, mid, term2, annual, final, result, exempt};
         }
+        function cleanupExpiredGradeObjections() {
+            const now = Date.now();
+            const tenDays = 10 * 24 * 60 * 60 * 1000;
+            const before = (appState.gradeObjections || []).length;
+            appState.gradeObjections = (appState.gradeObjections || []).filter(o => {
+                const created = Date.parse(o.createdAt || o.date || '');
+                // السجلات القديمة غير المؤرخة لا تُحذف تلقائياً لتجنب فقدان بياناتها.
+                return !Number.isFinite(created) || (now - created) < tenDays;
+            });
+            if (appState.gradeObjections.length !== before) persistLocalState();
+        }
         function renderStudentPortal(container) {
             if (!container) return;
             cleanupExpiredStudentMessages();
+            cleanupExpiredGradeObjections();
             const st = getStudentForPortal();
             if (!st) { container.innerHTML='<div class="bg-white rounded-3xl p-5 text-center">تعذر العثور على سجل الطالب. سجّل الدخول مجدداً.</div>'; return; }
             const tabs = [
                 ['grades','درجاتي','fa-award'],['attendance','الحضور والغياب','fa-user-check'],['behavior','السلوك والملاحظات','fa-star'],['daily','درجة اليومي','fa-clipboard-check'],['messages','رسائل الأستاذ','fa-comments'],['objections','اعتراض على درجة','fa-file-circle-question']
             ];
             const nav = `<div class="grid grid-cols-3 gap-1.5 mb-3">${tabs.map(([id,label,icon])=>`<button onclick="setStudentSection('${id}')" class="py-2.5 px-1 rounded-xl text-[9px] font-black border transition-colors ${activeStudentSection===id?'bg-slate-900 text-amber-400 border-slate-900':'bg-white text-slate-600 border-slate-200'}"><i class="fa-solid ${icon} block text-sm mb-1"></i>${label}</button>`).join('')}</div>`;
+            const studentSubjects = (appState.subjects || []).filter(x => normalizeAcademicText(x.class) === normalizeAcademicText(st.class) && normalizeAcademicText(x.section) === normalizeAcademicText(st.section) && normalizeAcademicText(x.studyType || 'صباحي') === normalizeAcademicText(st.studyType || 'صباحي'));
+            const subjectRows = [];
+            studentSubjects.forEach(x => { const name=String(x.name||'').trim(); if(name && !subjectRows.some(y=>normalizeAcademicText(y.name)===normalizeAcademicText(name))) subjectRows.push({name, teacher:x.teacher || (appState.subjectCatalog||[]).find(c=>normalizeAcademicText(c.name)===normalizeAcademicText(name))?.teacher || appState.schoolInfo.teacher || 'غير محدد'}); });
+            // المواد المضافة من الإعدادات تظهر أيضاً في بطاقة الطالب، حتى إن لم تُربط بعد بشعبة محددة.
+            (appState.subjectCatalog || []).forEach(x => { const name=String(x.name||'').trim(); if(name && !subjectRows.some(y=>normalizeAcademicText(y.name)===normalizeAcademicText(name))) subjectRows.push({name,teacher:x.teacher||appState.schoolInfo.teacher||'غير محدد'}); });
+            if (!subjectRows.length && String(st.subject||'').trim()) subjectRows.push({name:st.subject,teacher:appState.schoolInfo.teacher||'غير محدد'});
+            const studentInfoCard = `<div class="bg-white border border-slate-200 rounded-2xl p-3 mb-3 shadow-sm"><div class="flex items-center gap-2 mb-2"><span class="w-9 h-9 rounded-xl bg-indigo-50 text-indigo-700 flex items-center justify-center"><i class="fa-solid fa-id-card"></i></span><div><h3 class="font-black text-xs text-slate-800">بيانات الطالب الدراسية</h3><p class="text-[9px] text-slate-500">${escapeHtml(st.name)}</p></div></div><div class="grid grid-cols-2 gap-2 text-[10px]"><div class="rounded-xl bg-slate-50 p-2"><span class="text-slate-500 block">المدرس</span><b>${escapeHtml(appState.schoolInfo.teacher||'غير محدد')}</b></div><div class="rounded-xl bg-slate-50 p-2"><span class="text-slate-500 block">الصف</span><b>${escapeHtml(st.class||'غير محدد')}</b></div><div class="rounded-xl bg-slate-50 p-2"><span class="text-slate-500 block">الشعبة</span><b>${escapeHtml(st.section||'غير محدد')} · ${escapeHtml(st.studyType||'صباحي')}</b></div><div class="rounded-xl bg-slate-50 p-2"><span class="text-slate-500 block">المادة الدراسية</span><b>${subjectRows.length ? subjectRows.map(x=>escapeHtml(x.name)).join('، ') : 'لا توجد مادة مسجلة'}</b></div></div>${subjectRows.length>1?`<div class="mt-2 space-y-1">${subjectRows.map(x=>`<div class="flex justify-between gap-2 text-[9px] border-t pt-1"><span>${escapeHtml(x.name)}</span><span class="text-slate-500">${escapeHtml(x.teacher)}</span></div>`).join('')}</div>`:''}</div>`;
             let content = '';
             if (activeStudentSection === 'grades') {
                 const g = studentGradeSummary(st);
@@ -5376,7 +5414,7 @@
                 content = `<div class="bg-white rounded-2xl border p-3 mb-3"><h3 class="font-black text-sm mb-2">إرسال رسالة إلى الأستاذ</h3><textarea id="student-new-message" rows="3" maxlength="1500" placeholder="اكتب رسالتك هنا..." class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs font-bold outline-none"></textarea><button onclick="sendStudentMessage()" class="w-full mt-2 bg-slate-900 text-amber-400 rounded-xl py-2.5 text-xs font-black"><i class="fa-solid fa-paper-plane ml-1"></i>إرسال الرسالة</button><p class="text-[9px] text-slate-400 mt-2">تحذف المحادثات تلقائياً بعد مرور 3 أيام من آخر رسالة فيها.</p></div><div class="space-y-2">${msgs.length?msgs.map(m=>`<div class="bg-white border border-slate-200 rounded-2xl p-3"><div class="text-[9px] text-slate-400">رسالتك · ${escapeHtml(new Date(m.createdAt).toLocaleString('ar-IQ'))}</div><p class="text-xs font-bold text-slate-800 whitespace-pre-wrap mt-1">${escapeHtml(m.text||'')}</p>${(m.replies||[]).map(reply=>`<div class="mt-2 mr-2 border-r-2 border-emerald-400 bg-emerald-50 rounded-l-xl p-2"><p class="text-[9px] text-emerald-700 font-black">رد الأستاذ</p><p class="text-xs whitespace-pre-wrap mt-1">${escapeHtml(reply.text||'')}</p></div>`).join('')}<div class="grid grid-cols-2 gap-2 mt-3"><button onclick="editStudentMessage('${String(m.id).replace(/'/g,'')}')" class="rounded-xl bg-sky-50 text-sky-700 border border-sky-100 py-2 text-[10px] font-black">تعديل الرسالة</button><button onclick="deleteStudentMessage('${String(m.id).replace(/'/g,'')}')" class="rounded-xl bg-rose-50 text-rose-700 border border-rose-100 py-2 text-[10px] font-black">مسح الرسالة</button></div></div>`).join(''):'<div class="text-center text-xs text-slate-400 bg-white rounded-2xl p-5 border">لا توجد رسائل حتى الآن</div>'}</div>`;
             } else {
                 const own = (appState.gradeObjections||[]).filter(o=>String(o.studentId)===String(st.id)).sort((a,b)=>String(b.createdAt||'').localeCompare(String(a.createdAt||'')));
-                content = `<div class="bg-white rounded-2xl border p-3 mb-3"><h3 class="font-black text-sm mb-2">إرسال اعتراض على درجة</h3><label class="block text-[10px] font-bold mb-1">نوع الدرجة</label><select id="student-objection-grade" class="w-full bg-slate-50 border rounded-xl p-2 text-xs mb-2"><option>الفصل الأول</option><option>نصف السنة</option><option>الفصل الثاني</option><option>السعي السنوي</option><option>الامتحان النهائي</option><option>درجة اليومي</option><option>شيء آخر</option></select><textarea id="student-objection-text" rows="3" maxlength="1500" placeholder="وضح سبب الاعتراض..." class="w-full bg-slate-50 border rounded-xl p-3 text-xs font-bold"></textarea><button onclick="sendGradeObjection()" class="w-full mt-2 bg-rose-600 text-white rounded-xl py-2.5 text-xs font-black">إرسال الاعتراض</button></div><div class="space-y-2">${own.length?own.map(o=>`<div class="bg-white border rounded-2xl p-3"><div class="flex justify-between gap-2"><b class="text-xs">${escapeHtml(o.gradeKey||'اعتراض درجة')}</b><span class="text-[9px] font-black px-2 py-1 rounded-full ${o.status==='answered'?'bg-emerald-50 text-emerald-700':'bg-amber-50 text-amber-700'}">${o.status==='answered'?'تم الرد':'بانتظار الرد'}</span></div><p class="text-xs mt-2 whitespace-pre-wrap">${escapeHtml(o.message||'')}</p>${o.reply?`<div class="mt-2 bg-emerald-50 rounded-xl p-2 text-xs"><b class="text-emerald-700">رد الأستاذ:</b><p class="mt-1 whitespace-pre-wrap">${escapeHtml(o.reply)}</p></div>`:''}</div>`).join(''):'<div class="text-xs text-center text-slate-400 bg-white rounded-2xl p-4 border">لا توجد اعتراضات مرسلة</div>'}</div>`;
+                content = `<div class="bg-white rounded-2xl border p-3 mb-3"><h3 class="font-black text-sm mb-2">إرسال اعتراض على درجة</h3><label class="block text-[10px] font-bold mb-1">نوع الدرجة</label><select id="student-objection-grade" class="w-full bg-slate-50 border rounded-xl p-2 text-xs mb-2"><option>الفصل الأول</option><option>نصف السنة</option><option>الفصل الثاني</option><option>السعي السنوي</option><option>الامتحان النهائي</option><option>درجة اليومي</option><option>شيء آخر</option></select><textarea id="student-objection-text" rows="3" maxlength="1500" placeholder="وضح سبب الاعتراض..." class="w-full bg-slate-50 border rounded-xl p-3 text-xs font-bold"></textarea><button onclick="sendGradeObjection()" class="w-full mt-2 bg-rose-600 text-white rounded-xl py-2.5 text-xs font-black">إرسال الاعتراض</button><p class="text-[9px] text-slate-400 mt-2">يُحذف الاعتراض تلقائياً بعد 10 أيام من تاريخ إرساله.</p></div><div class="space-y-2">${own.length?own.map(o=>`<div class="bg-white border rounded-2xl p-3"><div class="flex justify-between gap-2"><b class="text-xs">${escapeHtml(o.gradeKey||'اعتراض درجة')}</b><span class="text-[9px] font-black px-2 py-1 rounded-full ${o.status==='answered'?'bg-emerald-50 text-emerald-700':'bg-amber-50 text-amber-700'}">${o.status==='answered'?'تم الرد':'بانتظار الرد'}</span></div><p class="text-[9px] text-slate-400 mt-1">تاريخ الإرسال: ${escapeHtml(new Date(o.createdAt||Date.now()).toLocaleString('ar-IQ'))}</p><p class="text-xs mt-2 whitespace-pre-wrap">${escapeHtml(o.message||'')}</p>${o.reply?`<div class="mt-2 bg-emerald-50 rounded-xl p-2 text-xs"><b class="text-emerald-700">رد الأستاذ:</b><p class="mt-1 whitespace-pre-wrap">${escapeHtml(o.reply)}</p></div>`:''}<div class="grid grid-cols-2 gap-2 mt-3"><button onclick="editStudentGradeObjection('${String(o.id).replace(/'/g,'')}')" class="rounded-xl bg-sky-50 text-sky-700 border border-sky-100 py-2 text-[10px] font-black">تعديل الاعتراض</button><button onclick="deleteStudentGradeObjection('${String(o.id).replace(/'/g,'')}')" class="rounded-xl bg-rose-50 text-rose-700 border border-rose-100 py-2 text-[10px] font-black">حذف الاعتراض</button></div></div>`).join(''):'<div class="text-xs text-center text-slate-400 bg-white rounded-2xl p-4 border">لا توجد اعتراضات مرسلة</div>'}</div>`;
             }
             container.innerHTML = `<div class="space-y-3">${nav}${content}</div>`;
         }
@@ -5401,10 +5439,31 @@
         function sendGradeObjection() {
             const st=getStudentForPortal(), message=String(document.getElementById('student-objection-text')?.value||'').trim(), gradeKey=String(document.getElementById('student-objection-grade')?.value||'الدرجة');
             if(!st||!message){showToast('اكتب سبب الاعتراض أولاً','error');return;}
+            cleanupExpiredGradeObjections();
             appState.gradeObjections.push({id:Date.now()+Math.random(),studentId:st.id,studentName:st.name,gradeKey,message,createdAt:new Date().toISOString(),status:'pending',reply:''});
             persistLocalState(); renderStudentPortal(document.getElementById('app-content')); showToast('تم إرسال الاعتراض إلى الأستاذ');
         }
+        function editStudentGradeObjection(objectionId) {
+            const st=getStudentForPortal(); cleanupExpiredGradeObjections();
+            const obj=(appState.gradeObjections||[]).find(o=>String(o.id)===String(objectionId)&&String(o.studentId)===String(st?.id));
+            if(!obj){showToast('الاعتراض غير موجود أو انتهت مدة الاحتفاظ به','error');renderStudentPortal(document.getElementById('app-content'));return;}
+            if(obj.status==='answered'){showToast('لا يمكن تعديل اعتراض تم الرد عليه','error');return;}
+            const gradeKey=prompt('عدّل نوع الدرجة:',obj.gradeKey||'الدرجة'); if(gradeKey===null)return;
+            const message=prompt('عدّل سبب الاعتراض:',obj.message||''); if(message===null)return;
+            if(!message.trim()){showToast('لا يمكن حفظ اعتراض فارغ','error');return;}
+            obj.gradeKey=gradeKey.trim()||'الدرجة'; obj.message=message.trim(); obj.updatedAt=new Date().toISOString();
+            persistLocalState();renderStudentPortal(document.getElementById('app-content'));showToast('تم تعديل الاعتراض');
+        }
+        function deleteStudentGradeObjection(objectionId) {
+            const st=getStudentForPortal(); cleanupExpiredGradeObjections();
+            const obj=(appState.gradeObjections||[]).find(o=>String(o.id)===String(objectionId)&&String(o.studentId)===String(st?.id));
+            if(!obj){showToast('الاعتراض غير موجود أو انتهت مدة الاحتفاظ به','error');renderStudentPortal(document.getElementById('app-content'));return;}
+            if(!confirm('هل تريد حذف هذا الاعتراض نهائياً؟'))return;
+            appState.gradeObjections=(appState.gradeObjections||[]).filter(o=>!(String(o.id)===String(objectionId)&&String(o.studentId)===String(st?.id)));
+            persistLocalState();renderStudentPortal(document.getElementById('app-content'));showToast('تم حذف الاعتراض');
+        }
         function renderTeacherStudentAdminTab(tab) {
+            cleanupExpiredGradeObjections();
             const body=document.getElementById('modal-body'); if(!body)return;
             if(tab==='students'){renderRegisteredStudentsList(body);return;}
             const messages=(appState.studentMessages||[]).slice().sort((a,b)=>String(b.updatedAt||b.createdAt||'').localeCompare(String(a.updatedAt||a.createdAt||'')));
