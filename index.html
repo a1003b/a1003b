@@ -184,6 +184,16 @@
                 font-weight: bold !important;
             }
 
+            /* في ورقة طباعة تقرير السعي: إخفاء أعمدة الصف والشعبة والمادة فقط. */
+            #grades-pursuit-report-table th:nth-child(3),
+            #grades-pursuit-report-table td:nth-child(3),
+            #grades-pursuit-report-table th:nth-child(4),
+            #grades-pursuit-report-table td:nth-child(4),
+            #grades-pursuit-report-table th:nth-child(5),
+            #grades-pursuit-report-table td:nth-child(5) {
+                display: none !important;
+            }
+
             @page {
                 size: A4;
                 margin: 12mm 15mm;
@@ -1789,19 +1799,39 @@
             updateAttendanceSubjectOptions();
         }
 
+        function syncStudentAttendanceFromSessions() {
+            const sessions = Array.isArray(appState.savedSessions) ? appState.savedSessions : [];
+            (appState.students || []).forEach(student => {
+                let attendance = 0, absent = 0, excused = 0;
+                const logs = [];
+                sessions.forEach(session => {
+                    if (!reportSessionMatchesStudent(session, student)) return;
+                    const records = session.records || {};
+                    const key = String(student.id);
+                    if (!Object.prototype.hasOwnProperty.call(records, key) || records[key] == null || records[key] === '') return;
+                    const status = String(records[key]).toLowerCase();
+                    if (status === 'absent') {
+                        absent++;
+                        logs.push({ date: session.date || '', day: getDayName(session.date), status: 'غائب', sessionId: session.id, subject: session.subject || '' });
+                    } else if (status === 'excused') {
+                        excused++;
+                        logs.push({ date: session.date || '', day: getDayName(session.date), status: 'مجاز', sessionId: session.id, subject: session.subject || '' });
+                    } else { attendance++; }
+                });
+                student.attendanceCount = attendance;
+                student.absenceCount = absent;
+                student.excusedCount = excused;
+                student.absenceLog = logs;
+            });
+        }
+
         function deleteSavedSession(sessId) {
             if (!confirm("هل أنت متأكد من رغبتك في حذف جلسة الحضور هذه نهائياً؟")) return;
-            const sessToDelete = appState.savedSessions.find(s => s.id === sessId);
-            if (sessToDelete) {
-                appState.students.forEach(st => {
-                    if (st.absenceLog) {
-                        st.absenceLog = st.absenceLog.filter(log => log.date !== sessToDelete.date);
-                    }
-                });
-            }
-            appState.savedSessions = appState.savedSessions.filter(s => s.id !== sessId);
+            appState.savedSessions = (appState.savedSessions || []).filter(session => String(session.id) !== String(sessId));
+            // أعد بناء أعداد الحضور والغياب والإجازات من الجلسات الباقية؛ لا تعتمد على عدادات تراكمية قديمة.
+            syncStudentAttendanceFromSessions();
             persistLocalState();
-            showToast("تم حذف جلسة الحضور بنجاح!");
+            showToast("تم حذف الجلسة وتحديث الحضور والغياب والإجازات والتقارير المرتبطة بها.");
             renderContent();
         }
 
@@ -2004,30 +2034,8 @@
                 appState.savedSessions.unshift(newSession);
             }
 
-            currentLoadedAttendanceStudents.forEach(st => {
-                let currentStudent = appState.students.find(s => s.id === st.id);
-                if (!currentStudent) return;
-
-                if (!currentStudent.absenceLog) currentStudent.absenceLog = [];
-                currentStudent.absenceLog = currentStudent.absenceLog.filter(log => log.date !== dateVal);
-
-                let stStatus = cleanRecords[st.id] || cleanRecords[String(st.id)] || 'present';
-
-                if (stStatus === 'absent') {
-                    currentStudent.absenceLog.push({ date: dateVal, day: dayText, status: "غائب" });
-                } else if (stStatus === 'excused') {
-                    currentStudent.absenceLog.push({ date: dateVal, day: dayText, status: "مجاز" });
-                }
-
-                let absCount = currentStudent.absenceLog.filter(l => l.status === 'غائب').length;
-                let excCount = currentStudent.absenceLog.filter(l => l.status === 'مجاز').length;
-                currentStudent.absenceCount = absCount;
-                currentStudent.excusedCount = excCount;
-                if (!currentStudent.attendanceCount) currentStudent.attendanceCount = 14;
-                if (stStatus === 'present' && !editingSessionId) {
-                    currentStudent.attendanceCount += 1;
-                }
-            });
+            // الجلسة المحفوظة هي المصدر الأساسي؛ أعد احتساب العدادات والسجلات من جميع الجلسات.
+            syncStudentAttendanceFromSessions();
 
             showToast("تم حفظ جلسة الحضور بنجاح وربطها مع التقارير!");
             persistLocalState();
@@ -3126,7 +3134,7 @@
                     </div>
                     ${getSearchInputHtml("updatePursuitReport")}
                     <div class="overflow-x-auto">
-                        <table class="w-full text-right">
+                        <table id="grades-pursuit-report-table" class="w-full text-right">
                             <thead class="bg-slate-900 text-amber-400 text-[9px]">
                                 <tr>
                                     <th class="p-1.5 text-center">#</th>
@@ -3993,6 +4001,9 @@
         function getStudentAbsenceMetrics(student, subjectName = 'all', classFilterVal = 'all', fromDate = '', toDate = '') {
             const pickedSubject = subjectName || 'all';
             const sessionMetrics = getReportSessionMetrics(student, pickedSubject, classFilterVal, fromDate, toDate);
+
+            // عند وجود جلسات مطابقة، تعتمد التقارير على سجلات الجلسات نفسها دون دمج العدادات القديمة؛ لتجنب التكرار وعدم التطابق.
+            if (sessionMetrics.hasApplicableSessions) return sessionMetrics;
 
             if (pickedSubject !== 'all') {
                 if (sessionMetrics.hasApplicableSessions) return sessionMetrics;
@@ -5486,8 +5497,11 @@
                 studentPortalSubjectContext = null;
                 content = `<div class="bg-gradient-to-r from-slate-900 to-indigo-950 rounded-3xl p-4 text-white mb-3"><p class="text-[10px] text-amber-300 font-bold">أهلاً بك</p><h3 class="text-lg font-black mt-1">${escapeHtml(st.name)}</h3><p class="text-[10px] text-slate-300 mt-1">${escapeHtml(st.class)} · شعبة ${escapeHtml(st.section)} · ${escapeHtml(st.subject || 'المادة غير محددة')}</p></div><div class="space-y-3"><section class="bg-white rounded-2xl border p-3"><h4 class="font-black text-sm text-indigo-800 mb-2">درجة الفصل الأول</h4><div class="flex justify-between items-center rounded-xl bg-indigo-50 border border-indigo-100 p-3 mb-2"><span class="text-xs font-bold text-indigo-900">المعدل للفصل الأول</span><b class="text-sm text-indigo-900">${g.term1===null?'—':escapeHtml(gradeDisplay(g.term1))} / 100</b></div><div class="space-y-2">${monthly('term1')}</div></section><section class="bg-white rounded-2xl border p-3"><h4 class="font-black text-sm text-violet-800 mb-2">نصف السنة</h4><div class="flex justify-between rounded-xl bg-slate-50 border p-3"><span class="text-xs font-bold">درجة نصف السنة</span><b class="text-sm">${midValue===null?'—':escapeHtml(gradeDisplay(roundGradeResult(midValue)))}</b></div></section><section class="bg-white rounded-2xl border p-3"><h4 class="font-black text-sm text-sky-800 mb-2">درجة الفصل الثاني</h4><div class="flex justify-between items-center rounded-xl bg-sky-50 border border-sky-100 p-3 mb-2"><span class="text-xs font-bold text-sky-900">المعدل للفصل الثاني</span><b class="text-sm text-sky-900">${g.term2===null?'—':escapeHtml(gradeDisplay(g.term2))} / 100</b></div><div class="space-y-2">${monthly('term2')}</div></section><section class="bg-white rounded-2xl border border-amber-100 p-3"><h4 class="font-black text-sm text-amber-800 mb-2">السعي السنوي</h4><div class="flex justify-between items-center rounded-xl bg-amber-50 border border-amber-100 p-3"><span class="text-xs font-bold">درجة السعي</span><b class="text-sm text-amber-900">${g.annual===null?'—':escapeHtml(gradeDisplay(g.annual))} / 100</b></div></section></div>${g.exempt?'<p class="mt-3 rounded-xl bg-emerald-50 border border-emerald-100 text-emerald-800 p-3 text-sm font-black text-center">مبروك انت معفو</p>':''}`;
             } else if (activeStudentSection === 'attendance') {
-                const logs = Array.isArray(st.absenceLog)?st.absenceLog.slice().sort((a,b)=>String(b.date||'').localeCompare(String(a.date||''))):[];
-                content = `<div class="grid grid-cols-3 gap-2 mb-3"><div class="bg-white rounded-2xl border p-3 text-center"><p class="text-[10px] text-slate-500">الحضور</p><b class="text-xl text-emerald-700">${Number(st.attendanceCount)||0}</b></div><div class="bg-white rounded-2xl border p-3 text-center"><p class="text-[10px] text-slate-500">الغياب</p><b class="text-xl text-rose-700">${Number(st.absenceCount)||0}</b></div><div class="bg-white rounded-2xl border p-3 text-center"><p class="text-[10px] text-slate-500">الإجازات</p><b class="text-xl text-amber-700">${Number(st.excusedCount)||0}</b></div></div><div class="bg-white rounded-2xl p-3 border border-slate-200"><h4 class="font-black text-xs mb-2">سجل الغياب والإجازات</h4>${logs.length?logs.map(log=>`<div class="flex justify-between border-b last:border-0 py-2 text-[10px]"><span>${escapeHtml(log.date||'')}</span><b class="${log.status==='مجاز'?'text-amber-700':'text-rose-700'}">${escapeHtml(log.status||'غائب')}</b></div>`).join(''):'<p class="text-xs text-slate-400 text-center py-3">لا توجد سجلات غياب مسجلة</p>'}</div>`;
+                const sessionMetrics = getReportSessionMetrics(st, 'all', 'all');
+                const hasSessions = sessionMetrics.hasApplicableSessions || sessionMetrics.hasSessionRecords;
+                const attendanceCounts = hasSessions ? sessionMetrics : { attendanceCount: Number(st.attendanceCount)||0, absentCount: Number(st.absenceCount)||0, excusedCount: Number(st.excusedCount)||0, attendanceLogs: Array.isArray(st.absenceLog)?st.absenceLog:[] };
+                const logs = (hasSessions ? sessionMetrics.attendanceLogs : attendanceCounts.attendanceLogs).slice().sort((a,b)=>String(b.date||'').localeCompare(String(a.date||'')));
+                content = `<div class="grid grid-cols-3 gap-2 mb-3"><div class="bg-white rounded-2xl border p-3 text-center"><p class="text-[10px] text-slate-500">الحضور</p><b class="text-xl text-emerald-700">${attendanceCounts.attendanceCount||0}</b></div><div class="bg-white rounded-2xl border p-3 text-center"><p class="text-[10px] text-slate-500">الغياب</p><b class="text-xl text-rose-700">${attendanceCounts.absentCount||0}</b></div><div class="bg-white rounded-2xl border p-3 text-center"><p class="text-[10px] text-slate-500">الإجازات</p><b class="text-xl text-amber-700">${attendanceCounts.excusedCount||0}</b></div></div><div class="bg-white rounded-2xl p-3 border border-slate-200"><h4 class="font-black text-xs mb-2">سجل الغياب والإجازات</h4>${logs.length?logs.map(log=>`<div class="flex justify-between border-b last:border-0 py-2 text-[10px]"><span>${escapeHtml(log.date||'')}${log.subject?` · ${escapeHtml(log.subject)}`:''}</span><b class="${log.status==='مجاز'?'text-amber-700':'text-rose-700'}">${escapeHtml(log.status||'غائب')}</b></div>`).join(''):'<p class="text-xs text-slate-400 text-center py-3">لا توجد سجلات غياب أو إجازات مسجلة</p>'}</div>`;
             } else if (activeStudentSection === 'behavior') {
                 const logs = Array.isArray(st.behaviorLog) ? st.behaviorLog.slice().sort((a,b)=>String(b.date||'').localeCompare(String(a.date||''))) : [];
                 const selectedBehavior = activeStudentBehaviorCard === 'notes' ? 'notes' : 'behavior';
