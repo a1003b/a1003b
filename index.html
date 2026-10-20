@@ -2087,8 +2087,8 @@
         function getTerm1Mark(student) { return roundGradeResult(getMonthlyAverage(getStudentGradeRecord(student, getGradeSubjectContext(), false), 'term1', 3)); }
         function getTerm2Mark(student) { return roundGradeResult(getMonthlyAverage(getStudentGradeRecord(student, getGradeSubjectContext(), false), 'term2', 3)); }
 
-        function getMidyearMark(student) {
-            const record = getStudentGradeRecord(student, getGradeSubjectContext(), false);
+        function calculateMidyearMarkFromRecord(record) {
+            record = record || createEmptyGradeRecord();
             if ((record.midyearMode || 'direct') !== 'components') return gradeNumber(record.midyearDirect) || 0;
             const written = gradeNumber(record.midyearWritten) || 0;
             const oral = gradeNumber(record.midyearOral) || 0;
@@ -2098,6 +2098,41 @@
                 if (parsed !== null) values.push(parsed);
             });
             return roundGradeResult(values.reduce((sum, value) => sum + value, 0) / values.length);
+        }
+
+        function getMidyearMark(student) {
+            return calculateMidyearMarkFromRecord(getStudentGradeRecord(student, getGradeSubjectContext(), false));
+        }
+
+        // تحديد المادة الافتراضية للطالب نفسه، لكي يستعمل التقرير وواجهة الطالب السجل الدراسي ذاته.
+        function getStudentGradeSubjectName(student) {
+            if (!student) return 'all';
+            const direct = String(student.subject || '').trim();
+            if (direct) return direct;
+            const keys = Object.keys(student.gradesBySubject || {});
+            if (keys.length) return keys[0];
+            const linked = (appState.subjects || []).find(item =>
+                normalizeAcademicText(item.class) === normalizeAcademicText(student.class) &&
+                normalizeAcademicText(item.section) === normalizeAcademicText(student.section) &&
+                normalizeAcademicText(item.studyType || 'صباحي') === normalizeAcademicText(student.studyType || 'صباحي')
+            );
+            return linked && linked.name ? String(linked.name).trim() : 'all';
+        }
+
+        // حساب موحد للدرجات المعروضة في واجهة الطالب وتقرير السعي بحسب مادة الطالب المحددة.
+        function getStudentGradeSummaryForSubject(student, subjectName) {
+            const chosenSubject = String(subjectName || getStudentGradeSubjectName(student) || 'all').trim() || 'all';
+            const record = getStudentGradeRecord(student, chosenSubject, false);
+            const term1 = getGradeMonthCount(record, 'term1') >= 2
+                ? roundGradeResult(getMonthlyAverage(record, 'term1', 3)) : null;
+            const term2 = getGradeMonthCount(record, 'term2') >= 2
+                ? roundGradeResult(getMonthlyAverage(record, 'term2', 3)) : null;
+            const mid = hasMidyearGrade(record) ? calculateMidyearMarkFromRecord(record) : null;
+            const annual = term1 !== null && term2 !== null && mid !== null
+                ? roundGradeResult((term1 + mid + term2) / 3) : null;
+            const finalExam = gradeRecordHasValue(record.finalExam) ? Number(record.finalExam) : null;
+            const result = annual === null ? null : (annual >= 90 ? annual : (finalExam === null ? null : roundGradeResult((annual + finalExam) / 2)));
+            return { subject: chosenSubject, term1, mid, term2, annual, final: finalExam, result, exempt: annual !== null && annual >= 90 };
         }
 
         function getAnnualWorkMark(student) {
@@ -2727,6 +2762,7 @@
                 att_by_date: updateAttByDateReport,
                 att_monthly: updateMonthlyAttReport,
                 grades_term_specific: updateTermSpecificGradesReport,
+                grades_pursuit_report: updatePursuitReport,
                 behavior_summary: updateBehaviorReport,
                 all_students: updateAllStudentsReport,
                 students_by_section: updateStudentsBySectionReport,
@@ -2804,6 +2840,7 @@
                         </div>
 
                         ${renderReportButton('grades_by_section', 'درجات الصف والشعبة كاملة', 'طباعة درجات الفصلين ونصف السنة والسعي السنوي والامتحان النهائي والنتيجة للشعبة', 'fa-list-ol', 'bg-emerald-50 text-emerald-600')}
+                        ${renderReportButton('grades_pursuit_report', 'تقرير السعي', 'عرض درجات كل طالب للفصل الأول ونصف السنة والفصل الثاني والسعي السنوي حسب الصف والشعبة والمادة', 'fa-file-circle-check', 'bg-teal-50 text-teal-700')}
                         ${renderReportButton('grades_term_specific', 'درجات الفصل المحدد', 'طباعة درجة فصل معين (الأول، الثاني، السعي، أو النهائي) فقط حسب الصف والشعبة والدراسة', 'fa-file-signature', 'bg-amber-50 text-amber-700')}
                         ${renderReportButton('grades_passed', 'الطلبة الناجحون', 'قوائم الطلبة الحاصلين على درجة 50 فأعلى', 'fa-circle-check', 'bg-emerald-100 text-emerald-800')}
                         ${renderReportButton('grades_failed', 'الطلبة الراسبون', 'قوائم الطلبة الراسبين في المادة/السعي', 'fa-circle-xmark', 'bg-rose-100 text-rose-800')}
@@ -3075,6 +3112,40 @@
                 `;
                 updateMonthlyAttReport();
             } 
+            // تقرير السعي: الفصل الأول ونصف السنة والفصل الثاني والسعي السنوي لكل طالب.
+            else if (reportKey === 'grades_pursuit_report') {
+                titleEl.innerText = "تقرير السعي";
+                iconEl.className = "fa-solid fa-file-circle-check";
+                bodyEl.innerHTML = getPrintableHeader("rep-pursuit-stage") + `
+                    <div class="no-print mb-2.5 print-hidden-control">
+                        <label class="block text-[10px] font-bold text-slate-600 mb-1">الصف والشعبة ونوع الدراسة:</label>
+                        <select id="rep-pursuit-class" onchange="updatePursuitReport()" class="w-full bg-slate-50 border p-2 rounded-xl text-xs font-bold">
+                            <option value="all">جميع الصفوف والشعب</option>
+                            ${classSelectOptions}
+                        </select>
+                    </div>
+                    ${getSearchInputHtml("updatePursuitReport")}
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-right">
+                            <thead class="bg-slate-900 text-amber-400 text-[9px]">
+                                <tr>
+                                    <th class="p-1.5 text-center">#</th>
+                                    <th class="p-1.5">اسم الطالب</th>
+                                    <th class="p-1.5">الصف</th>
+                                    <th class="p-1.5">الشعبة / الدراسة</th>
+                                    <th class="p-1.5">المادة</th>
+                                    <th class="p-1.5 text-center">الفصل الأول</th>
+                                    <th class="p-1.5 text-center">نصف السنة</th>
+                                    <th class="p-1.5 text-center">الفصل الثاني</th>
+                                    <th class="p-1.5 text-center">السعي</th>
+                                </tr>
+                            </thead>
+                            <tbody id="grades-pursuit-report-body"></tbody>
+                        </table>
+                    </div>
+                `;
+                updatePursuitReport();
+            }
             // 4. تقرير درجات الفصل المحدد
             else if (reportKey === 'grades_term_specific') {
                 titleEl.innerText = "تقرير درجات الفصل المحدد";
@@ -3751,6 +3822,42 @@
                 </tr>
             `).join('');
             document.getElementById('sec-students-report-body').innerHTML = rows || '<tr><td colspan="2" class="p-3 text-center text-xs text-slate-400">لا يوجد طلبة في هذه الصف/الشعبة</td></tr>';
+        }
+
+        // تقرير السعي حسب الصف والشعبة والمادة، مع استعمال نفس سجل الدرجات الظاهر للطالب.
+        function updatePursuitReport() {
+            const classSelect = document.getElementById('rep-pursuit-class');
+            const tbody = document.getElementById('grades-pursuit-report-body');
+            if (!classSelect || !tbody) return;
+            const classFilterVal = classSelect.value || 'all';
+            const subjectFilter = getSelectedReportSubject();
+            const searchKey = getSearchKeyword().toLocaleLowerCase('ar');
+            setPrintHeaderStageLabelUnified('rep-pursuit-stage', classFilterVal);
+
+            let filtered = [...(appState.students || [])];
+            if (classFilterVal !== 'all') filtered = filtered.filter(student => reportStudentMatchesClass(student, classFilterVal));
+            filtered = filterStudentsForReportSubject(filtered, subjectFilter);
+            if (searchKey) filtered = filtered.filter(student => String(student.name || '').toLocaleLowerCase('ar').includes(searchKey));
+            filtered = sortStudentsAlphabetically(filtered);
+
+            const rows = [];
+            filtered.forEach(student => {
+                const subjectName = subjectFilter !== 'all' ? subjectFilter : getStudentGradeSubjectName(student);
+                const summary = getStudentGradeSummaryForSubject(student, subjectName);
+                const show = value => value === null || value === undefined ? '—' : gradeDisplay(value);
+                rows.push(`<tr class="border-b border-slate-100 text-[10px]">
+                    <td class="p-1.5 text-center font-bold">${rows.length + 1}</td>
+                    <td class="p-1.5 font-bold text-slate-800">${escapeHtml(student.name || '')}</td>
+                    <td class="p-1.5">${escapeHtml(student.class || '—')}</td>
+                    <td class="p-1.5">${escapeHtml(student.section || '—')} / ${escapeHtml(student.studyType || 'صباحي')}</td>
+                    <td class="p-1.5">${escapeHtml(subjectName === 'all' ? 'غير محددة' : subjectName)}</td>
+                    <td class="p-1.5 text-center text-indigo-700">${show(summary.term1)}</td>
+                    <td class="p-1.5 text-center text-violet-700">${show(summary.mid)}</td>
+                    <td class="p-1.5 text-center text-sky-700">${show(summary.term2)}</td>
+                    <td class="p-1.5 text-center font-black text-amber-700">${show(summary.annual)}</td>
+                </tr>`);
+            });
+            tbody.innerHTML = rows.join('') || '<tr><td colspan="9" class="p-3 text-center text-xs text-slate-400">لا توجد درجات مطابقة للفلاتر المحددة</td></tr>';
         }
 
         // 8. درجات الصف والشعبة كاملة
@@ -5337,18 +5444,9 @@
             renderStudentPortal(document.getElementById('app-content'));
         }
         function studentGradeSummary(st) {
-            const subjectKeys = st.gradesBySubject && typeof st.gradesBySubject === 'object' ? Object.keys(st.gradesBySubject) : [];
-            studentPortalSubjectContext = String(st.subject || subjectKeys[0] || 'all');
-            const record = getStudentGradeRecord(st, studentPortalSubjectContext, false);
-            const term1 = getGradeTermViewMark(st, 'term1');
-            const mid = hasMidyearGrade(record) ? getMidyearMark(st) : null;
-            const term2 = getGradeTermViewMark(st, 'term2');
-            const annual = getAnnualViewMark(st);
-            const final = gradeRecordHasValue(record.finalExam) ? Number(record.finalExam) : null;
-            const result = getFinalResultViewMark(st);
-            const exempt = annual !== null && annual >= 90;
-            studentPortalSubjectContext = null;
-            return {term1, mid, term2, annual, final, result, exempt};
+            const subjectName = getStudentGradeSubjectName(st);
+            const summary = getStudentGradeSummaryForSubject(st, subjectName);
+            return { term1: summary.term1, mid: summary.mid, term2: summary.term2, annual: summary.annual, final: summary.final, result: summary.result, exempt: summary.exempt };
         }
         function cleanupExpiredGradeObjections() {
             const now = Date.now();
@@ -5381,8 +5479,7 @@
             let content = '';
             if (activeStudentSection === 'grades') {
                 const g = studentGradeSummary(st);
-                const subjectKeys = st.gradesBySubject && typeof st.gradesBySubject === 'object' ? Object.keys(st.gradesBySubject) : [];
-                studentPortalSubjectContext = String(st.subject || subjectKeys[0] || 'all');
+                studentPortalSubjectContext = getStudentGradeSubjectName(st);
                 const rec = getStudentGradeRecord(st, studentPortalSubjectContext, false);
                 const monthly = (prefix) => [1,2,3].filter(i => gradeRecordHasValue(rec[`${prefix}Month${i}`])).map(i => `<div class="flex justify-between items-center rounded-xl bg-slate-50 border p-3"><span class="text-xs font-bold">الشهر ${['الأول','الثاني','الثالث'][i-1]}</span><b class="text-sm text-indigo-800">${escapeHtml(gradeDisplay(roundGradeResult(Number(rec[`${prefix}Month${i}`]))))}</b></div>`).join('') || '<p class="text-xs text-slate-400 p-2">لم تُسجل درجات شهرية</p>';
                 const midValue = hasMidyearGrade(rec) ? getMidyearMark(st) : null;
