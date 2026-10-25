@@ -1506,6 +1506,16 @@
                             </div>
                             <i class="fa-solid fa-chevron-left text-xs text-slate-300"></i>
                         </div>
+                        <div onclick="triggerAction('data_usage')" class="flex items-center justify-between p-2.5 rounded-2xl hover:bg-indigo-50 cursor-pointer transition-colors border border-indigo-100">
+                            <div class="flex items-center gap-3">
+                                <div class="w-9 h-9 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center text-sm"><i class="fa-solid fa-database"></i></div>
+                                <div>
+                                    <h4 class="font-bold text-xs text-slate-800">البيانات وحجم التخزين</h4>
+                                    <p class="text-[10px] text-slate-400">عرض حجم البيانات المحفوظة محلياً وحجم سجل النظام السحابي</p>
+                                </div>
+                            </div>
+                            <i class="fa-solid fa-chevron-left text-xs text-indigo-300"></i>
+                        </div>
                         <div onclick="triggerAction('delete_all_data')" class="flex items-center justify-between p-2.5 rounded-2xl hover:bg-rose-50 cursor-pointer transition-colors border border-rose-100">
                             <div class="flex items-center gap-3">
                                 <div class="w-9 h-9 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center text-sm"><i class="fa-solid fa-trash-can"></i></div>
@@ -1638,7 +1648,35 @@
                 const classOk = selectedClass === 'all' || (normalizeAcademicText(st.class) === normalizeAcademicText(cls.name) && normalizeAcademicText(st.section) === normalizeAcademicText(cls.section) && normalizeAcademicText(st.studyType || 'صباحي') === normalizeAcademicText(cls.studyType || 'صباحي'));
                 return classOk && (!query || String(st.name || '').toLocaleLowerCase('ar').includes(query));
             }).sort((a,b) => String(b.date || '').localeCompare(String(a.date || '')));
-            box.innerHTML = `<h4 class="text-xs font-black text-slate-700 px-1">${isNote?'الملاحظات المحفوظة':'تقييمات الواجبات المحفوظة'}</h4>` + (filtered.length ? filtered.map(record => `<article class="bg-white border border-slate-200 rounded-2xl p-3"><div class="flex justify-between gap-2"><b class="text-xs text-slate-800">${escapeHtml(record.studentName || (appState.students.find(x=>String(x.id)===String(record.studentId))||{}).name || 'طالب')}</b><span class="text-[9px] text-slate-400">${escapeHtml(record.date || '')}</span></div><p class="text-[10px] font-bold text-slate-500 mt-1">${escapeHtml(record.class || '')} · شعبة ${escapeHtml(record.section || '')}</p><p class="text-xs mt-2 whitespace-pre-wrap">${escapeHtml(isNote ? record.text : (record.title || 'واجب'))}</p>${isNote ? '' : `<span class="inline-block mt-2 rounded-full bg-indigo-50 text-indigo-700 px-2 py-1 text-[9px] font-black">${escapeHtml(record.evaluation || 'غير مقيم')}</span>${record.text?`<p class="text-[10px] mt-2 whitespace-pre-wrap">${escapeHtml(record.text)}</p>`:''}`}</article>`).join('') : `<div class="bg-white border rounded-2xl text-center text-xs text-slate-400 p-5">لا توجد سجلات ${isNote?'ملاحظات':'واجبات'} مطابقة</div>`);
+            box.innerHTML = `<h4 class="text-xs font-black text-slate-700 px-1">${isNote?'الملاحظات المحفوظة':'تقييمات الواجبات المحفوظة'}</h4>` + (filtered.length ? filtered.map(record => `<article class="bg-white border border-slate-200 rounded-2xl p-3"><div class="flex justify-between gap-2"><b class="text-xs text-slate-800">${escapeHtml(record.studentName || (appState.students.find(x=>String(x.id)===String(record.studentId))||{}).name || 'طالب')}</b><span class="text-[9px] text-slate-400">${escapeHtml(record.date || '')}</span></div><p class="text-[10px] font-bold text-slate-500 mt-1">${escapeHtml(record.class || '')} · شعبة ${escapeHtml(record.section || '')}</p><p class="text-xs mt-2 whitespace-pre-wrap">${escapeHtml(isNote ? record.text : (record.title || 'واجب'))}</p>${isNote ? `<div class="grid grid-cols-2 gap-2 mt-3"><button type="button" onclick="editStudentNoteRecord('${String(record.id).replace(/'/g,'')}')" class="rounded-xl bg-sky-50 text-sky-700 border border-sky-100 py-2 text-[10px] font-black"><i class="fa-solid fa-pen ml-1"></i>تعديل الملاحظة</button><button type="button" onclick="deleteStudentNoteRecord('${String(record.id).replace(/'/g,'')}')" class="rounded-xl bg-rose-50 text-rose-700 border border-rose-100 py-2 text-[10px] font-black"><i class="fa-solid fa-trash ml-1"></i>حذف الملاحظة</button></div>` : `<span class="inline-block mt-2 rounded-full bg-indigo-50 text-indigo-700 px-2 py-1 text-[9px] font-black">${escapeHtml(record.evaluation || 'غير مقيم')}</span>${record.text?`<p class="text-[10px] mt-2 whitespace-pre-wrap">${escapeHtml(record.text)}</p>`:''}`}</article>`).join('') : `<div class="bg-white border rounded-2xl text-center text-xs text-slate-400 p-5">لا توجد سجلات ${isNote?'ملاحظات':'واجبات'} مطابقة</div>`);
+        }
+
+        function editStudentNoteRecord(recordId) {
+            const record = (appState.studentNotes || []).find(item => String(item.id) === String(recordId));
+            if (!record) { showToast('الملاحظة غير موجودة', 'error'); return; }
+            const title = prompt('تعديل عنوان الملاحظة:', record.title || '');
+            if (title === null) return;
+            const textValue = prompt('تعديل نص الملاحظة:', record.text || '');
+            if (textValue === null) return;
+            if (!textValue.trim()) { showToast('لا يمكن حفظ ملاحظة فارغة', 'error'); return; }
+            const date = prompt('تعديل تاريخ الملاحظة (YYYY-MM-DD):', record.date || new Date().toISOString().slice(0,10));
+            if (date === null) return;
+            if (date.trim() && !/^\d{4}-\d{2}-\d{2}$/.test(date.trim())) { showToast('صيغة التاريخ غير صحيحة؛ استخدم YYYY-MM-DD', 'error'); return; }
+            record.title = title.trim(); record.text = textValue.trim(); record.date = date.trim() || record.date;
+            record.updatedAt = new Date().toISOString();
+            persistLocalState();
+            renderStudentRecordHistory('notes');
+            showToast('تم تعديل الملاحظة وتحديثها في واجهة الطالب');
+        }
+
+        function deleteStudentNoteRecord(recordId) {
+            const record = (appState.studentNotes || []).find(item => String(item.id) === String(recordId));
+            if (!record) { showToast('الملاحظة غير موجودة', 'error'); return; }
+            if (!confirm(`هل تريد حذف ملاحظة الطالب ${record.studentName || ''}؟`)) return;
+            appState.studentNotes = (appState.studentNotes || []).filter(item => String(item.id) !== String(recordId));
+            persistLocalState();
+            renderStudentRecordHistory('notes');
+            showToast('تم حذف الملاحظة من السجل وواجهة الطالب');
         }
 
         function getTrackingClassOptions(selected = 'all') {
@@ -3085,7 +3123,9 @@
                 grades_failed: updateFailedReport,
                 att_frequent: updateFrequentAbsenceReport,
                 att_exceeded: updateAttExceededReport,
-                att_by_student: updateAttStudentDropdown
+                att_by_student: updateAttStudentDropdown,
+                behavior_entries_report: updateBehaviorEntriesReportRows,
+                activity_entries_report: updateActivityEntriesReportRows
             };
             if (updateByKey[activeReportKey]) updateByKey[activeReportKey]();
             else if (activeReportKey === 'students_by_year') updateStudentsByYearReport();
@@ -3117,6 +3157,68 @@
                 const status = record.status || record.evaluation || 'غير محدد';
                 return `<tr class="border-b border-slate-100 text-[10px]"><td class="p-2 text-center font-bold">${index+1}</td><td class="p-2 whitespace-nowrap">${escapeHtml(record.date || '')}</td><td class="p-2 font-bold">${escapeHtml(student?.name || record.studentName || 'طالب')}</td><td class="p-2">${escapeHtml(record.class || student?.class || '')} · ${escapeHtml(record.section ?? student?.section ?? '')}</td><td class="p-2">${escapeHtml(record.title || 'واجب')}</td><td class="p-2 font-black">${escapeHtml(status)}</td><td class="p-2 whitespace-pre-wrap">${escapeHtml(record.note || record.text || '—')}</td></tr>`;
             }).join('') : '<tr><td colspan="7" class="p-4 text-center text-xs text-slate-400">لا توجد سجلات واجبات مطابقة للفلاتر</td></tr>';
+        }
+
+        function reportRecordMatchesClass(record, student, classValue) {
+            if (!classValue || classValue === 'all') return true;
+            const parts = parseClassSelection(classValue);
+            const name = record.stage || record.class || (student && student.class) || '';
+            const section = record.section != null ? record.section : (student && student.section) || '';
+            const studyType = record.studyType || (student && student.studyType) || 'صباحي';
+            return normalizeAcademicText(name) === normalizeAcademicText(parts.name) &&
+                normalizeAcademicText(section) === normalizeAcademicText(parts.section) &&
+                normalizeAcademicText(studyType) === normalizeAcademicText(parts.studyType || 'صباحي');
+        }
+
+        function isWithinReportDateRange(dateValue, fromDate, toDate) {
+            const date = String(dateValue || '');
+            if (fromDate && (!date || date < fromDate)) return false;
+            if (toDate && (!date || date > toDate)) return false;
+            return true;
+        }
+
+        function updateBehaviorEntriesReportRows() {
+            const tbody = document.getElementById('behavior-entries-report-body');
+            if (!tbody) return;
+            const classValue = document.getElementById('rep-behentries-class')?.value || 'all';
+            const fromDate = document.getElementById('rep-behentries-from')?.value || '';
+            const toDate = document.getElementById('rep-behentries-to')?.value || '';
+            const query = String(document.getElementById('rep-behentries-search')?.value || '').trim().toLocaleLowerCase('ar');
+            setPrintHeaderStageLabelUnified('rep-behentries-stage', classValue);
+            const reportSubject = getSelectedReportSubject();
+            const rows = [];
+            (appState.students || []).forEach(student => {
+                (Array.isArray(student.behaviorLog) ? student.behaviorLog : []).forEach((record, idx) => {
+                    if (!record) return;
+                    const stageRecord = { ...record, stage: record.stage || student.class, section: record.section == null ? student.section : record.section, studyType: record.studyType || student.studyType || 'صباحي' };
+                    if (!reportRecordMatchesClass(stageRecord, student, classValue)) return;
+                    if (!isWithinReportDateRange(record.date, fromDate, toDate)) return;
+                    if (reportSubject !== 'all' && normalizeReportValue(record.subject) !== normalizeReportValue(reportSubject)) return;
+                    const text = `${student.name || ''} ${record.subject || ''} ${record.mark || ''} ${record.date || ''}`.toLocaleLowerCase('ar');
+                    if (query && !text.includes(query)) return;
+                    rows.push({ student, record, idx });
+                });
+            });
+            rows.sort((a,b) => String(b.record.date || '').localeCompare(String(a.record.date || '')) || String(a.student.name || '').localeCompare(String(b.student.name || ''), 'ar'));
+            tbody.innerHTML = rows.length ? rows.map((entry,index) => `<tr class="border-b border-slate-100 text-[10px]"><td class="p-2 text-center font-bold">${index+1}</td><td class="p-2 whitespace-nowrap">${escapeHtml(entry.record.date || 'غير مؤرخ')}</td><td class="p-2 font-bold">${escapeHtml(entry.student.name || entry.record.studentName || 'طالب')}</td><td class="p-2">${escapeHtml(entry.record.stage || entry.student.class || '')} · ${escapeHtml(entry.record.section ?? entry.student.section ?? '')} · ${escapeHtml(entry.record.studyType || entry.student.studyType || 'صباحي')}</td><td class="p-2">${escapeHtml(entry.record.subject || '—')}</td><td class="p-2 font-black">${escapeHtml(entry.record.mark || 'غير محدد')}</td></tr>`).join('') : '<tr><td colspan="6" class="p-4 text-center text-xs text-slate-400">لا توجد سجلات سلوك مطابقة للفلاتر المحددة</td></tr>';
+        }
+
+        function updateActivityEntriesReportRows() {
+            const tbody = document.getElementById('activity-entries-report-body');
+            if (!tbody) return;
+            const classValue = document.getElementById('rep-activityentries-class')?.value || 'all';
+            const fromDate = document.getElementById('rep-activityentries-from')?.value || '';
+            const toDate = document.getElementById('rep-activityentries-to')?.value || '';
+            const query = String(document.getElementById('rep-activityentries-search')?.value || '').trim().toLocaleLowerCase('ar');
+            setPrintHeaderStageLabelUnified('rep-activityentries-stage', classValue);
+            const rows = (appState.studentActivities || []).map(record => ({ record, student: (appState.students || []).find(st => String(st.id) === String(record.studentId)) })).filter(({record,student}) => {
+                if (!record) return false;
+                if (!reportRecordMatchesClass({ ...record, class: record.class || (student && student.class), section: record.section == null ? (student && student.section) : record.section, studyType: record.studyType || (student && student.studyType) || 'صباحي' }, student, classValue)) return false;
+                if (!isWithinReportDateRange(record.date, fromDate, toDate)) return false;
+                const text = `${student?.name || record.studentName || ''} ${record.mark || ''} ${record.date || ''}`.toLocaleLowerCase('ar');
+                return !query || text.includes(query);
+            }).sort((a,b) => String(b.record.date || '').localeCompare(String(a.record.date || '')) || String(a.student?.name || a.record.studentName || '').localeCompare(String(b.student?.name || b.record.studentName || ''), 'ar'));
+            tbody.innerHTML = rows.length ? rows.map(({record,student},index) => `<tr class="border-b border-slate-100 text-[10px]"><td class="p-2 text-center font-bold">${index+1}</td><td class="p-2 whitespace-nowrap">${escapeHtml(record.date || 'غير مؤرخ')}</td><td class="p-2 font-bold">${escapeHtml(student?.name || record.studentName || 'طالب')}</td><td class="p-2">${escapeHtml(record.class || student?.class || '')} · ${escapeHtml(record.section ?? student?.section ?? '')} · ${escapeHtml(record.studyType || student?.studyType || 'صباحي')}</td><td class="p-2 font-black">${escapeHtml(record.mark || 'غير محدد')}</td></tr>`).join('') : '<tr><td colspan="5" class="p-4 text-center text-xs text-slate-400">لا توجد سجلات نشاط مطابقة للفلاتر المحددة</td></tr>';
         }
 
         function updateStudentsByYearReport() {
@@ -3152,6 +3254,8 @@
                         </div>
 
                         ${renderReportButton('behavior_summary', 'تقرير المتابعة', 'حساب عدد العلامات (مميز، متوسط، سيء) لكل طالب وطباعتها حسب الصف والشعبة والدراسة', 'fa-star-half-stroke', 'bg-amber-50 text-amber-600')}
+                        ${renderReportButton('behavior_entries_report', 'تقرير سجلات السلوك', 'عرض جميع إدخالات تقييم السلوك لكل طالب ضمن تاريخ أو مدة محددة وحسب الصف والشعبة', 'fa-list-check', 'bg-amber-50 text-amber-700')}
+                        ${renderReportButton('activity_entries_report', 'تقرير سجلات النشاط', 'عرض جميع إدخالات تقييم النشاط لكل طالب ضمن تاريخ أو مدة محددة وحسب الصف والشعبة', 'fa-person-running', 'bg-emerald-50 text-emerald-700')}
                         ${renderReportButton('homework_report', 'تقرير الواجبات', 'تقرير كل واجب مسجل لكل طالب حسب الصف والشعبة والتاريخ مع حالة الإنجاز والملاحظات', 'fa-book-open', 'bg-violet-50 text-violet-700')}
                         ${renderReportButton('all_students', 'قائمة جميع الطلبة', 'عرض وطباعة أسماء الطلبة حسب الصف والشعبة ونوع الدراسة المحددة', 'fa-users-line', 'bg-blue-50 text-blue-600')}
                         ${renderReportButton('students_by_section', 'قائمة طلبة حسب شعبة معينة', 'طباعة أسماء الطلاب حسب الصف والشعبة الأكاديمية والدراسة', 'fa-network-wired', 'bg-emerald-50 text-emerald-600')}
@@ -3347,6 +3451,26 @@
                     <div><label class="block text-[10px] font-bold mb-1">البحث عن طالب أو واجب</label><input id="rep-homework-search" type="search" value="" oninput="updateHomeworkReportRows()" placeholder="اسم الطالب أو الواجب" class="w-full bg-slate-50 border p-2 rounded-xl text-xs font-bold"></div>
                 </div><div class="overflow-x-auto"><table class="w-full text-right"><thead class="bg-slate-900 text-amber-400 text-[10px]"><tr><th class="p-2 text-center">ت</th><th class="p-2">التاريخ</th><th class="p-2">اسم الطالب</th><th class="p-2">الصف والشعبة</th><th class="p-2">الواجب</th><th class="p-2">حالة الإنجاز</th><th class="p-2">الملاحظة</th></tr></thead><tbody id="homework-report-body"></tbody></table></div>`;
                 updateHomeworkReportRows();
+            } else if (reportKey === 'behavior_entries_report') {
+                titleEl.innerText = 'تقرير سجلات السلوك';
+                iconEl.className = 'fa-solid fa-list-check';
+                bodyEl.innerHTML = getPrintableHeader('rep-behentries-stage') + `<div class="no-print grid grid-cols-2 gap-2 mb-3 print-hidden-control">
+                    <div class="col-span-2"><label class="block text-[10px] font-bold mb-1">الصف والشعبة ونوع الدراسة</label><select id="rep-behentries-class" onchange="updateBehaviorEntriesReportRows()" class="w-full bg-slate-50 border p-2 rounded-xl text-xs font-bold"><option value="all">جميع الصفوف والشعب</option>${classSelectOptions}</select></div>
+                    <div><label class="block text-[10px] font-bold mb-1">من تاريخ</label><input id="rep-behentries-from" type="date" onchange="updateBehaviorEntriesReportRows()" class="w-full bg-slate-50 border p-2 rounded-xl text-xs font-bold"></div>
+                    <div><label class="block text-[10px] font-bold mb-1">إلى تاريخ</label><input id="rep-behentries-to" type="date" onchange="updateBehaviorEntriesReportRows()" class="w-full bg-slate-50 border p-2 rounded-xl text-xs font-bold"></div>
+                    <div class="col-span-2"><label class="block text-[10px] font-bold mb-1">البحث عن اسم الطالب أو المادة أو التقييم</label><input id="rep-behentries-search" type="search" oninput="updateBehaviorEntriesReportRows()" placeholder="اكتب للبحث..." class="w-full bg-slate-50 border p-2 rounded-xl text-xs font-bold"></div>
+                </div><div class="overflow-x-auto"><table class="w-full text-right"><thead class="bg-slate-900 text-amber-400 text-[10px]"><tr><th class="p-2 text-center">ت</th><th class="p-2">التاريخ</th><th class="p-2">اسم الطالب</th><th class="p-2">الصف والشعبة</th><th class="p-2">المادة</th><th class="p-2">تقييم السلوك</th></tr></thead><tbody id="behavior-entries-report-body"></tbody></table></div>`;
+                updateBehaviorEntriesReportRows();
+            } else if (reportKey === 'activity_entries_report') {
+                titleEl.innerText = 'تقرير سجلات النشاط';
+                iconEl.className = 'fa-solid fa-person-running';
+                bodyEl.innerHTML = getPrintableHeader('rep-activityentries-stage') + `<div class="no-print grid grid-cols-2 gap-2 mb-3 print-hidden-control">
+                    <div class="col-span-2"><label class="block text-[10px] font-bold mb-1">الصف والشعبة ونوع الدراسة</label><select id="rep-activityentries-class" onchange="updateActivityEntriesReportRows()" class="w-full bg-slate-50 border p-2 rounded-xl text-xs font-bold"><option value="all">جميع الصفوف والشعب</option>${classSelectOptions}</select></div>
+                    <div><label class="block text-[10px] font-bold mb-1">من تاريخ</label><input id="rep-activityentries-from" type="date" onchange="updateActivityEntriesReportRows()" class="w-full bg-slate-50 border p-2 rounded-xl text-xs font-bold"></div>
+                    <div><label class="block text-[10px] font-bold mb-1">إلى تاريخ</label><input id="rep-activityentries-to" type="date" onchange="updateActivityEntriesReportRows()" class="w-full bg-slate-50 border p-2 rounded-xl text-xs font-bold"></div>
+                    <div class="col-span-2"><label class="block text-[10px] font-bold mb-1">البحث عن اسم الطالب أو التقييم</label><input id="rep-activityentries-search" type="search" oninput="updateActivityEntriesReportRows()" placeholder="اكتب للبحث..." class="w-full bg-slate-50 border p-2 rounded-xl text-xs font-bold"></div>
+                </div><div class="overflow-x-auto"><table class="w-full text-right"><thead class="bg-slate-900 text-amber-400 text-[10px]"><tr><th class="p-2 text-center">ت</th><th class="p-2">التاريخ</th><th class="p-2">اسم الطالب</th><th class="p-2">الصف والشعبة</th><th class="p-2">تقييم النشاط</th></tr></thead><tbody id="activity-entries-report-body"></tbody></table></div>`;
+                updateActivityEntriesReportRows();
             }
             // 1. تقرير قائمة الغياب والمجازين
             else if (reportKey === 'att_absence_list') {
@@ -4679,6 +4803,79 @@
             `;
         }
 
+        function getStorageByteLength(value) {
+            const text = String(value == null ? '' : value);
+            try { return new Blob([text]).size; }
+            catch (e) { try { return unescape(encodeURIComponent(text)).length; } catch (_) { return text.length; } }
+        }
+
+        function formatStorageSize(bytes) {
+            const n = Math.max(0, Number(bytes) || 0);
+            if (n < 1024) return `${n.toLocaleString('ar-IQ')} بايت`;
+            if (n < 1024 * 1024) return `${(n / 1024).toLocaleString('ar-IQ', { maximumFractionDigits: 2 })} كيلوبايت`;
+            return `${(n / (1024 * 1024)).toLocaleString('ar-IQ', { maximumFractionDigits: 2 })} ميغابايت`;
+        }
+
+        function getCurrentLocalStorageUsage() {
+            let total = 0;
+            try {
+                for (let i = 0; i < localStorage.length; i++) {
+                    const key = localStorage.key(i);
+                    if (key != null) total += getStorageByteLength(key) + getStorageByteLength(localStorage.getItem(key) || '');
+                }
+            } catch (e) { /* قد تمنع إعدادات المتصفح قراءة التخزين المحلي */ }
+            return total;
+        }
+
+        function renderDataUsageModal(bodyEl) {
+            const snapshotText = JSON.stringify(getSafeStateSnapshot());
+            const localText = localStorage.getItem('sp_academic_local_data') || '';
+            const localSize = getStorageByteLength(localText || snapshotText);
+            const stateSize = getStorageByteLength(snapshotText);
+            const totalLocalSize = getCurrentLocalStorageUsage();
+            bodyEl.innerHTML = `<div class="space-y-3">
+                <div class="rounded-3xl bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 text-white p-4 relative overflow-hidden">
+                    <div class="absolute -left-3 -bottom-5 text-7xl opacity-10"><i class="fa-solid fa-database"></i></div>
+                    <div class="relative flex items-center gap-3"><span class="w-12 h-12 rounded-2xl bg-amber-400/15 text-amber-300 flex items-center justify-center text-xl"><i class="fa-solid fa-chart-pie"></i></span><div><h3 class="font-black text-sm">بيانات التخزين</h3><p class="text-[10px] text-slate-300 mt-1">قياس حجم بيانات المنظومة المحفوظة حالياً</p></div></div>
+                </div>
+                <div class="grid grid-cols-2 gap-2">
+                    <div class="rounded-2xl border border-sky-100 bg-sky-50 p-3"><span class="w-8 h-8 rounded-xl bg-white text-sky-700 flex items-center justify-center mb-2"><i class="fa-solid fa-hard-drive"></i></span><p class="text-[9px] text-sky-800 font-bold">بيانات النظام المحفوظة محلياً</p><strong id="data-usage-local" class="block text-xs text-slate-900 mt-1">${formatStorageSize(localSize)}</strong></div>
+                    <div class="rounded-2xl border border-violet-100 bg-violet-50 p-3"><span class="w-8 h-8 rounded-xl bg-white text-violet-700 flex items-center justify-center mb-2"><i class="fa-solid fa-cloud"></i></span><p class="text-[9px] text-violet-800 font-bold">حجم بيانات النظام السحابية</p><strong id="data-usage-cloud" class="block text-xs text-slate-900 mt-1">جارٍ التحقق...</strong></div>
+                    <div class="rounded-2xl border border-emerald-100 bg-emerald-50 p-3"><span class="w-8 h-8 rounded-xl bg-white text-emerald-700 flex items-center justify-center mb-2"><i class="fa-solid fa-database"></i></span><p class="text-[9px] text-emerald-800 font-bold">حجم بيانات المنظومة الحالية بصيغة JSON</p><strong id="data-usage-state" class="block text-xs text-slate-900 mt-1">${formatStorageSize(stateSize)}</strong></div>
+                    <div class="rounded-2xl border border-amber-100 bg-amber-50 p-3"><span class="w-8 h-8 rounded-xl bg-white text-amber-700 flex items-center justify-center mb-2"><i class="fa-solid fa-boxes-stacked"></i></span><p class="text-[9px] text-amber-800 font-bold">إجمالي التخزين المحلي لهذا الموقع</p><strong id="data-usage-total-local" class="block text-xs text-slate-900 mt-1">${formatStorageSize(totalLocalSize)}</strong></div>
+                </div>
+                <div class="rounded-2xl border border-slate-200 bg-white p-3"><div class="flex items-center justify-between gap-2"><b class="text-[10px] text-slate-800">حالة قراءة السجل السحابي</b><span id="data-usage-cloud-status" class="text-[9px] text-slate-500">جارٍ الاتصال بقاعدة البيانات...</span></div><p id="data-usage-cloud-updated" class="text-[9px] text-slate-400 mt-2">يتم قياس حجم سجل بيانات هذا النظام فقط.</p><button type="button" onclick="refreshCloudDataUsage()" class="mt-3 w-full bg-slate-900 text-amber-400 rounded-xl py-2.5 text-[10px] font-black"><i class="fa-solid fa-rotate ml-1"></i>تحديث بيانات التخزين السحابي</button></div>
+                <p class="text-[9px] leading-relaxed text-slate-500">الأحجام المعروضة تقيس بيانات المنظومة نفسها بالكيلوبايت أو الميغابايت، ولا تمثل الحصة الكلية أو المساحة المتبقية في مشروع Supabase؛ فهذه المعلومات لا تُتاح من سجل البيانات الذي يقرأه التطبيق.</p>
+            </div>`;
+            refreshCloudDataUsage();
+        }
+
+        async function refreshCloudDataUsage() {
+            const cloudSize = document.getElementById('data-usage-cloud');
+            const cloudStatus = document.getElementById('data-usage-cloud-status');
+            const cloudUpdated = document.getElementById('data-usage-cloud-updated');
+            if (!cloudSize || !cloudStatus) return;
+            cloudSize.textContent = 'جارٍ التحقق...';
+            cloudStatus.textContent = 'جارٍ الاتصال بقاعدة البيانات...';
+            try {
+                const rows = await readSupabaseRecord();
+                const row = Array.isArray(rows) ? rows.find(item => item && String(item.id) === String(SUPABASE_RECORD_ID)) || rows[0] : null;
+                if (!row || row.data == null) {
+                    cloudSize.textContent = 'غير متاح';
+                    cloudStatus.textContent = 'لم يُعثر على سجل سحابي';
+                    if (cloudUpdated) cloudUpdated.textContent = 'لا يوجد سجل بيانات مقروء في الجدول المحدد حالياً.';
+                    return;
+                }
+                cloudSize.textContent = formatStorageSize(getStorageByteLength(JSON.stringify(row.data)));
+                cloudStatus.textContent = 'تمت القراءة بنجاح';
+                if (cloudUpdated) cloudUpdated.textContent = `آخر تحديث مسجل في السحابة: ${row.updated_at ? new Date(row.updated_at).toLocaleString('ar-IQ') : 'غير محدد'}. الحجم للسجل الحالي فقط.`;
+            } catch (error) {
+                cloudSize.textContent = 'غير متاح حالياً';
+                cloudStatus.textContent = 'تعذر الاتصال';
+                if (cloudUpdated) cloudUpdated.textContent = 'تعذر قراءة السجل السحابي الآن. تم الاحتفاظ بحجم البيانات المحلية، ويمكن إعادة المحاولة عند توفر الاتصال والصلاحيات.';
+            }
+        }
+
         // --- Modals Engine ---
         function triggerAction(actionKey) {
             const modalSubmit = document.getElementById('modal-submit-btn');
@@ -4863,6 +5060,11 @@
                             <input id="teacher-password-confirm" type="password" autocomplete="new-password" onkeydown="if(event.key==='Enter') handleModalSubmit()" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-sm font-bold outline-none focus:border-amber-400" placeholder="أعد كتابة كلمة المرور">
                         </div>
                     </div>`;
+            } else if (actionKey === 'data_usage') {
+                titleEl.innerText = "بيانات التخزين المحلي والسحابي";
+                iconEl.className = "fa-solid fa-database";
+                if (modalSubmit) modalSubmit.style.display = 'none';
+                renderDataUsageModal(bodyEl);
             } else if (actionKey === 'backup_data') {
                 titleEl.innerText = "تصدير أو استرجاع نسخة احتياطية";
                 iconEl.className = "fa-solid fa-file-arrow-down";
