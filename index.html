@@ -3,9 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- App icon and home-screen metadata -->
     <meta name="theme-color" content="#0f172a">
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%230f172a'/%3E%3Cpath d='M16 38 50 20 84 38 50 56Z' fill='%23f59e0b'/%3E%3Cpath d='M28 47v18c12 10 32 10 44 0V47L50 59Z' fill='%23fff'/%3E%3Cpath d='M84 39v25' stroke='%23f59e0b' stroke-width='5' stroke-linecap='round'/%3E%3Ccircle cx='84' cy='69' r='5' fill='%23f59e0b'/%3E%3C/svg%3E">
-    <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%230f172a'/%3E%3Cpath d='M16 38 50 20 84 38 50 56Z' fill='%23f59e0b'/%3E%3Cpath d='M28 47v18c12 10 32 10 44 0V47L50 59Z' fill='%23fff'/%3E%3C/svg%3E">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="المدرس الذكي">
+    <meta name="mobile-web-app-capable" content="yes">
+    <link rel="icon" type="image/png" sizes="192x192" href="data:image/png;base64,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">
+    <link rel="shortcut icon" type="image/png" href="data:image/png;base64,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">
+    <link rel="apple-touch-icon" sizes="192x192" href="data:image/png;base64,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">
+    <link rel="manifest" href="data:application/manifest+json,%7B%22name%22%3A%22%D9%85%D9%86%D8%B8%D9%88%D9%85%D8%A9%20%D8%A7%D9%84%D9%85%D8%AF%D8%B1%D8%B3%20%D8%A7%D9%84%D8%B0%D9%83%D9%8A%22%2C%22short_name%22%3A%22%D8%A7%D9%84%D9%85%D8%AF%D8%B1%D8%B3%20%D8%A7%D9%84%D8%B0%D9%83%D9%8A%22%2C%22display%22%3A%22standalone%22%2C%22start_url%22%3A%22.%2F%22%2C%22background_color%22%3A%22%230f172a%22%2C%22theme_color%22%3A%22%230f172a%22%7D">
     <title>منظومة المدرس الذكي Pro | إدارة الصفوف والتقارير المدرسية</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -39,6 +46,15 @@
         body {
             font-family: 'Cairo', sans-serif;
             background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+        }
+
+        /* Prevent iOS Safari from zooming when a form field receives focus. */
+        @supports (-webkit-touch-callout: none) {
+            input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="button"]):not([type="submit"]):not([type="reset"]),
+            select,
+            textarea {
+                font-size: 16px !important;
+            }
         }
         .no-scrollbar::-webkit-scrollbar {
             display: none;
@@ -203,19 +219,6 @@
         #login-screen { display: flex; }
         #main-app-container { display: none; }
         .login-code-input { letter-spacing: .18em; text-transform: uppercase; }
-
-        /* منع التكبير التلقائي لحقول الإدخال في Safari على iPhone/iPad.
-           Safari يقرّب الصفحة عند التركيز على حقل يقل حجم خطه عن 16px. */
-        @media screen and (max-width: 767px) {
-            input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
-            select,
-            textarea,
-            [contenteditable="true"] {
-                font-size: 16px !important;
-            }
-        }
-        html, body { -webkit-text-size-adjust: 100%; }
-
         @media print { #login-screen { display:none !important; } }
     </style>
 </head>
@@ -567,6 +570,9 @@
             studentNotes: [],
             homeworkRecords: [],
             studentActivities: [],
+            behaviorSessions: [],
+            homeworkSessions: [],
+            activitySessions: [],
             studentMessages: [],
             gradeObjections: [],
             savedSessions: [
@@ -602,6 +608,13 @@
         let activeBehaviorSubTab = 'behavior';
         let homeworkTrackingState = { classValue: 'all', search: '', date: new Date().toISOString().slice(0,10), title: '', noteStudentId: null };
         let activityTrackingState = { classValue: 'all', search: '', date: new Date().toISOString().slice(0,10) };
+        let trackingSetupState = {
+            behavior: { classValue: 'all', date: new Date().toISOString().slice(0,10), subject: '', search: '' },
+            homework: { classValue: 'all', date: new Date().toISOString().slice(0,10), title: '', search: '' },
+            activity: { classValue: 'all', date: new Date().toISOString().slice(0,10), search: '' }
+        };
+        let trackingSessionDrafts = { behavior: null, homework: null, activity: null };
+        let editingTeacherMessageId = null;
         let activeTeacherMessageFilter = 'all';
         let activeTeacherObjectionFilter = 'all';
 
@@ -635,6 +648,9 @@
             appState.studentNotes = Array.isArray(appState.studentNotes) ? appState.studentNotes : [];
             appState.homeworkRecords = Array.isArray(appState.homeworkRecords) ? appState.homeworkRecords : [];
             appState.studentActivities = Array.isArray(appState.studentActivities) ? appState.studentActivities : [];
+            appState.behaviorSessions = Array.isArray(appState.behaviorSessions) ? appState.behaviorSessions : [];
+            appState.homeworkSessions = Array.isArray(appState.homeworkSessions) ? appState.homeworkSessions : [];
+            appState.activitySessions = Array.isArray(appState.activitySessions) ? appState.activitySessions : [];
             appState.dailyGrades.forEach(record => { if (record && record.id == null) record.id = Date.now() + Math.random(); });
             appState.studentNotes.forEach(record => { if (record && record.id == null) record.id = Date.now() + Math.random(); });
             appState.homeworkRecords.forEach(record => { if (record && record.id == null) record.id = Date.now() + Math.random(); });
@@ -794,6 +810,38 @@
                 }
             });
             appState.subjectCatalog = Array.from(catalogMap.values()).sort((a, b) => a.name.localeCompare(b.name, 'ar'));
+
+            // إزالة تقييمات السلوك الفردية القديمة مرة واحدة حتى تبدأ سجلات السلوك الجديدة عبر الجلسات.
+            if (Number(appState.behaviorSessionSchemaVersion || 0) < 1) {
+                appState.students.forEach(student => { student.behaviorLog = []; delete student.behavior; });
+                appState.behaviorSessions = [];
+                appState.behaviorSessionSchemaVersion = 1;
+            }
+            const migrateRecordsToSessions = (records, existingSessions, kind) => {
+                if (Number(appState[kind + 'SessionSchemaVersion'] || 0) >= 1) return existingSessions;
+                const map = new Map();
+                (records || []).forEach(record => {
+                    if (!record) return;
+                    const student = appState.students.find(st => String(st.id) === String(record.studentId));
+                    if (!student) return;
+                    const className = String(record.class || record.stage || student.class || '');
+                    const section = String(record.section ?? student.section ?? '');
+                    const studyType = String(record.studyType || student.studyType || 'صباحي');
+                    const date = String(record.date || '');
+                    const title = kind === 'homework' ? String(record.title || 'واجب') : '';
+                    const groupKey = JSON.stringify([date, className, section, studyType, title]);
+                    if (!map.has(groupKey)) map.set(groupKey, { id: Date.now() + Math.random(), kind, date, className, class: className, section, studyType, title, subject: record.subject || '', records: {}, notes: {}, createdAt: record.createdAt || new Date().toISOString(), updatedAt: record.updatedAt || record.createdAt || new Date().toISOString() });
+                    const session = map.get(groupKey);
+                    const value = kind === 'homework' ? (record.status || record.evaluation || '') : (record.mark || '');
+                    if (value) session.records[String(record.studentId)] = value;
+                    const note = String(record.note || record.text || '').trim();
+                    if (note) session.notes[String(record.studentId)] = note;
+                });
+                appState[kind + 'SessionSchemaVersion'] = 1;
+                return existingSessions.length ? existingSessions : Array.from(map.values());
+            };
+            appState.homeworkSessions = migrateRecordsToSessions(appState.homeworkRecords, appState.homeworkSessions, 'homework');
+            appState.activitySessions = migrateRecordsToSessions(appState.studentActivities, appState.activitySessions, 'activity');
         }
 
         function normalizeAcademicText(value) {
@@ -1278,6 +1326,12 @@
             appState.studentNotes = [];
             appState.homeworkRecords = [];
             appState.studentActivities = [];
+            appState.behaviorSessions = [];
+            appState.homeworkSessions = [];
+            appState.activitySessions = [];
+            appState.behaviorSessionSchemaVersion = 1;
+            appState.homeworkSessionSchemaVersion = 1;
+            appState.activitySessionSchemaVersion = 1;
             appState.studentMessages = [];
             appState.gradeObjections = [];
             appState.schoolInfo = { name: 'مدرسة النموذجية', university: '', college: '', department: 'الإدارة', teacher: 'المدرس', subject: '', year: '', logo: '' };
@@ -1307,7 +1361,8 @@
                     { title: "إدارة الصفوف والشعب", desc: "إضافة، تعديل، وحذف الصفوف والشعب مع ربط نوع الدراسة (صباحي/مسائي)", icon: "fa-layer-group", colorBg: "bg-indigo-50 text-indigo-600 border-indigo-100", action: "add_class" },
                     { title: "تسجيل طالب جديد", desc: "إضافة طالب بالاسم الرباعي والصف والشعبة (مع ربط الدراسة تلقائياً)", icon: "fa-user-plus", colorBg: "bg-emerald-50 text-emerald-600 border-emerald-100", action: "add_student" },
                     { title: "الطلبة المسجلين في النظام", desc: "تعديل وحذف بيانات الطلبة المسجلين ومرحلتهم ودراستهم أبجدياً", icon: "fa-users-gear", colorBg: "bg-teal-50 text-teal-600 border-teal-100", action: "manage_registered_students" },
-                    { title: "الرسائل والاعتراضات", desc: "متابعة مراسلات الطلبة والرد عليها وتعديل الرسائل واعتراضات الدرجات", icon: "fa-comments", colorBg: "bg-violet-50 text-violet-700 border-violet-100", action: "manage_student_correspondence" },
+                    { title: "الرسائل", desc: "إرسال الرسائل إلى الطلبة حسب الصف والشعبة ومتابعة الردود وتعديل الرسائل أو حذفها", icon: "fa-envelope", colorBg: "bg-violet-50 text-violet-700 border-violet-100", action: "manage_student_messages" },
+                    { title: "الاعتراضات", desc: "متابعة اعتراضات الطلبة على الدرجات وتعديلها والرد عليها", icon: "fa-file-circle-question", colorBg: "bg-rose-50 text-rose-700 border-rose-100", action: "manage_student_objections" },
                     { title: "استيراد أسماء الطلبة", desc: "إدخال قائمة أسماء الطلبة بالجملة حسب الصف والشعبة والدراسة", icon: "fa-file-import", colorBg: "bg-sky-50 text-sky-600 border-sky-100", action: "import_students" },
                     { title: "إضافة مادة دراسية", desc: "إضافة وتعديل وحذف سجل المواد الدراسية العام", icon: "fa-book-bookmark", colorBg: "bg-rose-50 text-rose-600 border-rose-100", action: "add_subject" }
                 ]
@@ -1715,369 +1770,221 @@
             }));
         }
 
-        function captureHomeworkTrackingControls() {
-            const cls = document.getElementById('homework-class-select');
-            const search = document.getElementById('homework-student-search');
-            const date = document.getElementById('homework-date-select');
-            const title = document.getElementById('homework-title-input');
-            if (cls) homeworkTrackingState.classValue = cls.value || 'all';
-            if (search) homeworkTrackingState.search = search.value || '';
-            if (date) homeworkTrackingState.date = date.value || new Date().toISOString().slice(0,10);
-            if (title) homeworkTrackingState.title = title.value || '';
+        function getTrackingSessionConfig(kind) {
+            const configs = {
+                behavior: { title: 'جلسات تقييم السلوك', singular: 'السلوك', icon: 'fa-star', accent: 'amber', arrayKey: 'behaviorSessions', marks: ['مميز','متوسط','سيء'], noEntry: 'لا توجد جلسات سلوك محفوظة بعد' },
+                homework: { title: 'جلسات تقييم الواجبات', singular: 'الواجب', icon: 'fa-book-open', accent: 'violet', arrayKey: 'homeworkSessions', marks: ['مكتمل','مكتمل جزئياً','غير مكتمل'], noEntry: 'لا توجد جلسات واجبات محفوظة بعد' },
+                activity: { title: 'جلسات تقييم النشاط', singular: 'النشاط', icon: 'fa-person-running', accent: 'emerald', arrayKey: 'activitySessions', marks: ['مميز','متوسط','ضعيف'], noEntry: 'لا توجد جلسات نشاط محفوظة بعد' }
+            };
+            return configs[kind] || configs.behavior;
         }
 
-        function renderHomeworkTrackingTab(container) {
+        function getTrackingSessionArray(kind) {
+            const key = getTrackingSessionConfig(kind).arrayKey;
+            if (!Array.isArray(appState[key])) appState[key] = [];
+            return appState[key];
+        }
+
+        function updateTrackingSessionSubjectOptions() {
+            const cls = document.getElementById('tracking-class-select');
+            const subject = document.getElementById('tracking-subject-select');
+            if (!cls || !subject) return;
+            const previous = subject.value || trackingSetupState.behavior.subject || '';
+            subject.innerHTML = getSubjectOptionsHtmlForClass(cls.value, previous);
+            if (previous && [...subject.options].some(option => normalizeAcademicText(option.value) === normalizeAcademicText(previous))) subject.value = previous;
+            trackingSetupState.behavior.subject = subject.value || '';
+        }
+
+        function captureTrackingSessionSetup(kind) {
+            const state = trackingSetupState[kind];
+            if (!state) return;
+            const cls = document.getElementById('tracking-class-select');
+            const date = document.getElementById('tracking-date-select');
+            const title = document.getElementById('tracking-title-input');
+            const subject = document.getElementById('tracking-subject-select');
+            const search = document.getElementById('tracking-student-search');
+            if (cls) state.classValue = cls.value || 'all';
+            if (date) state.date = date.value || new Date().toISOString().slice(0,10);
+            if (title) state.title = title.value || '';
+            if (subject) state.subject = subject.value || '';
+            if (search) state.search = search.value || '';
+        }
+
+        function renderBehaviorMarksTab(container) { renderTrackingSessionTab('behavior', container); }
+        function renderHomeworkTrackingTab(container) { renderTrackingSessionTab('homework', container); }
+        function renderActivityTrackingTab(container) { renderTrackingSessionTab('activity', container); }
+
+        function renderTrackingSessionTab(kind, container) {
             if (!container) return;
-            const state = homeworkTrackingState;
+            const config = getTrackingSessionConfig(kind);
+            const state = trackingSetupState[kind];
+            const draft = trackingSessionDrafts[kind];
+            const classes = getTrackingClassOptions(state.classValue);
+            const subjectControl = kind === 'behavior' ? `<div><label class="block text-[10px] font-extrabold text-slate-600 mb-1">المادة الدراسية (اختياري)</label><select id="tracking-subject-select" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-xs font-bold">${getSubjectOptionsHtmlForClass(state.classValue, state.subject)}</select></div>` : '';
+            const titleControl = kind === 'homework' ? `<div><label class="block text-[10px] font-extrabold text-slate-600 mb-1">اسم الواجب</label><input id="tracking-title-input" type="text" maxlength="160" value="${escapeHtml(state.title || '')}" placeholder="مثال: حل تمارين الفصل الثاني" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-xs font-bold"></div>` : '';
+            const activeBlock = draft ? renderTrackingSessionEditorHtml(kind, draft) : '';
+            const sessions = getTrackingSessionArray(kind).slice().sort((a,b) => String(b.date || '').localeCompare(String(a.date || '')) || String(b.updatedAt || '').localeCompare(String(a.updatedAt || '')));
+            const history = sessions.length ? sessions.map(session => {
+                const count = Object.keys(session.records || {}).filter(id => String(session.records[id] || '').trim()).length;
+                const className = session.className || session.class || '';
+                const sessionTitle = kind === 'homework' ? `<p class="text-[10px] text-violet-700 font-bold mt-1">الواجب: ${escapeHtml(session.title || 'واجب')}</p>` : kind === 'behavior' && session.subject ? `<p class="text-[10px] text-amber-700 font-bold mt-1">المادة: ${escapeHtml(session.subject)}</p>` : '';
+                return `<article class="bg-white border border-slate-200 rounded-2xl p-3 shadow-sm"><div class="flex items-start justify-between gap-2"><div class="min-w-0"><h4 class="text-xs font-black text-slate-800">${escapeHtml(session.date || 'تاريخ غير محدد')} · ${escapeHtml(className)} (شعبة ${escapeHtml(session.section || '')})</h4><p class="text-[9px] text-slate-400 mt-1">${escapeHtml(session.studyType || 'صباحي')} · تم تقييم ${count} طالب</p>${sessionTitle}</div><span class="w-9 h-9 rounded-xl bg-${config.accent}-50 text-${config.accent}-700 flex items-center justify-center shrink-0"><i class="fa-solid ${config.icon}"></i></span></div><div class="grid grid-cols-2 gap-2 mt-3"><button type="button" onclick="openTrackingSessionById('${kind}','${String(session.id).replace(/'/g,'')}')" class="rounded-xl bg-slate-900 text-amber-300 py-2 text-[10px] font-black"><i class="fa-solid fa-pen-to-square ml-1"></i>فتح / تعديل</button><button type="button" onclick="deleteTrackingSession('${kind}','${String(session.id).replace(/'/g,'')}')" class="rounded-xl bg-rose-50 text-rose-700 border border-rose-100 py-2 text-[10px] font-black"><i class="fa-solid fa-trash-can ml-1"></i>حذف الجلسة</button></div></article>`;
+            }).join('') : `<div class="bg-white border border-dashed border-slate-300 rounded-2xl p-5 text-center text-xs text-slate-400">${config.noEntry}</div>`;
             container.innerHTML = `<div class="space-y-3.5">
-                <div class="bg-violet-500/10 border border-violet-500/20 p-3 rounded-2xl flex items-center gap-2.5"><span class="w-10 h-10 rounded-xl bg-violet-100 text-violet-700 flex items-center justify-center"><i class="fa-solid fa-book-open text-lg"></i></span><div><h4 class="font-extrabold text-xs text-slate-800">سجل الواجبات المدرسية</h4><p class="text-[10px] text-slate-500">حدد اسم الواجب والتاريخ، ثم قيّم إنجاز كل طالب وأضف ملاحظة عند الحاجة</p></div></div>
-                <div class="bg-white rounded-3xl p-3.5 shadow-sm border border-slate-200/80 space-y-2.5">
-                    <div><label class="block text-[10px] font-extrabold text-slate-600 mb-1">الصف والشعبة والدراسة</label><select id="homework-class-select" onchange="captureHomeworkTrackingControls(); renderHomeworkTrackingTab(document.getElementById('behavior-subtab-body'))" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2 text-xs font-bold">${getTrackingClassOptions(state.classValue)}</select></div>
-                    <div class="grid grid-cols-2 gap-2"><div><label class="block text-[10px] font-extrabold text-slate-600 mb-1">تاريخ الواجب</label><input id="homework-date-select" type="date" value="${escapeHtml(state.date)}" onchange="captureHomeworkTrackingControls(); renderHomeworkTrackingTab(document.getElementById('behavior-subtab-body'))" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2 text-xs font-bold"></div><div><label class="block text-[10px] font-extrabold text-slate-600 mb-1">اسم الواجب</label><input id="homework-title-input" type="text" maxlength="160" value="${escapeHtml(state.title)}" oninput="captureHomeworkTrackingControls(); renderHomeworkStudentList()" placeholder="مثال: حل التمارين" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2 text-xs font-bold"></div></div>
-                </div>
-                <div><label class="block text-[10px] font-extrabold text-slate-600 mb-1">بحث عن اسم طالب</label><input id="homework-student-search" type="search" value="${escapeHtml(state.search)}" oninput="captureHomeworkTrackingControls(); renderHomeworkStudentList()" placeholder="اكتب اسم الطالب..." class="w-full bg-white border border-slate-200 rounded-xl p-2.5 text-xs font-bold"></div>
-                <div id="homework-students-list" class="space-y-2"></div><div id="homework-session-history" class="space-y-2 mt-4"></div>
+                <div class="bg-${config.accent}-500/10 border border-${config.accent}-500/20 p-3 rounded-2xl flex items-center gap-2.5"><span class="w-10 h-10 rounded-xl bg-${config.accent}-100 text-${config.accent}-700 flex items-center justify-center"><i class="fa-solid ${config.icon} text-lg"></i></span><div><h4 class="font-extrabold text-xs text-slate-800">${config.title}</h4><p class="text-[10px] text-slate-500">اختر الصف والشعبة والتاريخ، ثم افتح الجلسة لتقييم الطلبة وحفظها أو تعديلها لاحقاً</p></div></div>
+                <div class="bg-white rounded-3xl p-3.5 shadow-sm border border-slate-200/80 space-y-3"><div><label class="block text-[10px] font-extrabold text-slate-600 mb-1">الصف والشعبة والدراسة</label><select id="tracking-class-select" onchange="captureTrackingSessionSetup('${kind}'); ${kind==='behavior'?'updateTrackingSessionSubjectOptions();':''}" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-xs font-bold">${classes}</select></div><div class="grid grid-cols-2 gap-2"><div><label class="block text-[10px] font-extrabold text-slate-600 mb-1">تاريخ الجلسة</label><input id="tracking-date-select" type="date" value="${escapeHtml(state.date || new Date().toISOString().slice(0,10))}" onchange="captureTrackingSessionSetup('${kind}')" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-xs font-bold"></div>${kind==='homework' ? `<div class="flex items-end"><span class="text-[9px] text-slate-400 pb-2">الجلسة تحفظ كل تقييمات الواجب معاً</span></div>` : ''}</div>${subjectControl}${titleControl}<button type="button" onclick="openTrackingSession('${kind}')" class="w-full rounded-xl bg-slate-900 text-amber-300 py-2.5 text-xs font-black shadow-md"><i class="fa-solid fa-folder-open ml-1"></i>فتح / إنشاء جلسة</button></div>
+                ${activeBlock}
+                <div class="space-y-2"><div class="flex items-center justify-between px-1"><h4 class="text-xs font-black text-slate-700">الجلسات المحفوظة</h4><span class="text-[9px] text-slate-400">${sessions.length} جلسة</span></div>${history}</div>
             </div>`;
-            renderHomeworkStudentList();
+            if (kind === 'behavior') updateTrackingSessionSubjectOptions();
+            if (draft) renderTrackingSessionRosterOnly(kind);
         }
 
-        function renderHomeworkStudentList() {
-            captureHomeworkTrackingControls();
-            const box = document.getElementById('homework-students-list');
-            if (!box) return;
-            const state = homeworkTrackingState;
-            const students = getTrackingFilteredStudents(state.classValue, state.search);
-            if (!students.length) { box.innerHTML = '<div class="bg-white rounded-3xl p-5 text-center border border-slate-200 text-xs text-slate-400">لا يوجد طلبة مطابقون للفلاتر</div>'; renderHomeworkSessionHistory(); return; }
-            const titleKey = normalizeAcademicText(state.title);
-            box.innerHTML = students.map((st, index) => {
-                const idArg = String(st.id).replace(/\\/g, '\\\\').replace(/'/g, "\\'");
-                const matching = (appState.homeworkRecords || []).filter(r => String(r.studentId) === String(st.id) && String(r.date || '') === String(state.date || '') && (!titleKey || normalizeAcademicText(r.title || '') === titleKey)).sort((a,b) => String(b.updatedAt || b.createdAt || '').localeCompare(String(a.updatedAt || a.createdAt || '')));
-                const record = matching[0] || null;
-                const status = String(record?.status || record?.evaluation || '');
-                const buttonStyle = value => status === value ? 'ring-2 ring-offset-1 ring-violet-400 font-black' : '';
-                const noteOpen = String(state.noteStudentId) === String(st.id);
-                const noteValue = record ? String(record.note || record.text || '') : '';
-                const safeId = String(st.id).replace(/[^\w-]/g, '_');
-                return `<article class="bg-white rounded-2xl p-3 shadow-sm border border-slate-200/80">
-                    <div class="flex items-start justify-between gap-2 mb-2"><div class="flex items-start gap-2.5"><span class="w-6 h-6 rounded-full bg-slate-100 text-slate-700 text-xs font-bold flex items-center justify-center">${index + 1}</span><div><h4 class="font-bold text-xs text-slate-800">${escapeHtml(st.name)}</h4><p class="text-[10px] text-slate-400">${escapeHtml(st.class)} (${escapeHtml(st.section)}) · ${escapeHtml(st.studyType || 'صباحي')}</p></div></div><span class="text-[9px] font-black px-2 py-1 rounded-full ${status === 'مكتمل' ? 'bg-emerald-50 text-emerald-700' : status === 'مكتمل جزئياً' ? 'bg-amber-50 text-amber-800' : status === 'غير مكتمل' ? 'bg-rose-50 text-rose-700' : 'bg-slate-100 text-slate-500'}">${escapeHtml(status || 'لم يُقيّم')}</span></div>
-                    <div class="text-[10px] text-slate-500 mb-2">الواجب: <b class="text-slate-700">${escapeHtml(state.title || record?.title || 'اكتب اسم الواجب أعلاه')}</b> · ${escapeHtml(state.date)}</div>
-                    <div class="flex items-center gap-1.5 pt-2 border-t border-slate-100"><button onclick="setStudentHomeworkStatus('${idArg}','مكتمل')" class="flex-1 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 py-2 rounded-xl text-[9px] ${buttonStyle('مكتمل')}">واجب مكتمل</button><button onclick="setStudentHomeworkStatus('${idArg}','مكتمل جزئياً')" class="flex-1 bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 py-2 rounded-xl text-[9px] ${buttonStyle('مكتمل جزئياً')}">مكتمل جزئياً</button><button onclick="setStudentHomeworkStatus('${idArg}','غير مكتمل')" class="flex-1 bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 py-2 rounded-xl text-[9px] ${buttonStyle('غير مكتمل')}">غير مكتمل</button></div>
-                    <button type="button" onclick="toggleHomeworkNoteEditor('${idArg}')" class="w-full mt-2 bg-violet-50 text-violet-700 border border-violet-100 rounded-xl py-2 text-[10px] font-black"><i class="fa-solid fa-note-sticky ml-1"></i>${noteValue ? 'تعديل ملاحظة الواجب' : 'إضافة ملاحظة'}</button>
-                    ${noteOpen ? `<div class="mt-2 rounded-xl border border-violet-100 bg-violet-50/40 p-2.5"><label class="block text-[10px] font-black text-violet-800 mb-1">ملاحظة ${escapeHtml(st.name)}</label><textarea id="homework-note-${safeId}" rows="3" maxlength="2000" class="w-full bg-white border border-violet-100 rounded-xl p-2.5 text-xs font-bold" placeholder="اكتب ملاحظة عن إنجاز الواجب...">${escapeHtml(noteValue)}</textarea><div class="grid grid-cols-2 gap-2 mt-2"><button onclick="saveHomeworkStudentNote('${idArg}')" class="rounded-xl bg-violet-700 text-white py-2 text-[10px] font-black">حفظ الملاحظة</button><button onclick="toggleHomeworkNoteEditor('${idArg}')" class="rounded-xl bg-white border text-slate-600 py-2 text-[10px] font-black">إلغاء</button></div></div>` : (noteValue ? `<p class="mt-2 rounded-xl bg-violet-50/70 p-2 text-[10px] text-slate-700 whitespace-pre-wrap">${escapeHtml(noteValue)}</p>` : '')}
-                </article>`;
-            }).join('');
-            renderHomeworkSessionHistory();
+        function renderTrackingSessionEditorHtml(kind, draft) {
+            const config = getTrackingSessionConfig(kind);
+            const className = draft.className || draft.class || '';
+            const assessed = Object.keys(draft.records || {}).filter(id => String(draft.records[id] || '').trim()).length;
+            const titleText = kind === 'homework' ? `الواجب: ${draft.title || 'غير محدد'}` : kind === 'behavior' && draft.subject ? `المادة: ${draft.subject}` : config.singular;
+            const accent = config.accent;
+            return `<section class="bg-${accent}-50/50 border border-${accent}-100 rounded-3xl p-3 space-y-3"><div class="flex items-start justify-between gap-2"><div><h4 class="text-sm font-black text-slate-900">جلسة ${config.singular}</h4><p class="text-[10px] text-slate-500 mt-1">${escapeHtml(draft.date || '')} · ${escapeHtml(className)} (شعبة ${escapeHtml(draft.section || '')}) · ${escapeHtml(draft.studyType || 'صباحي')}</p><p class="text-[10px] text-${accent}-700 font-bold mt-1">${escapeHtml(titleText)} · ${assessed} تقييم</p></div><button type="button" onclick="closeTrackingSession('${kind}')" class="rounded-full bg-white border border-slate-200 text-slate-500 w-8 h-8"><i class="fa-solid fa-xmark"></i></button></div><div><label class="block text-[10px] font-black text-slate-600 mb-1">البحث عن اسم الطالب</label><input id="tracking-student-search" type="search" value="${escapeHtml(trackingSetupState[kind].search || '')}" oninput="captureTrackingSessionSetup('${kind}'); renderTrackingSessionRosterOnly('${kind}')" placeholder="اكتب اسم الطالب..." class="w-full bg-white border border-slate-200 rounded-xl p-2.5 text-xs font-bold"></div><div id="tracking-session-roster" class="space-y-2"></div><button type="button" onclick="saveTrackingSession('${kind}')" class="w-full rounded-xl bg-${accent}-700 text-white py-2.5 text-xs font-black shadow-md"><i class="fa-solid fa-floppy-disk ml-1"></i>حفظ الجلسة</button></section>`;
         }
 
-        function findHomeworkRecord(studentId, date, title) {
-            const titleKey = normalizeAcademicText(title);
-            return (appState.homeworkRecords || []).find(r => String(r.studentId) === String(studentId) && String(r.date || '') === String(date || '') && normalizeAcademicText(r.title || '') === titleKey);
+        function renderTrackingSessionRosterOnly(kind) {
+            const draft = trackingSessionDrafts[kind];
+            const box = document.getElementById('tracking-session-roster');
+            if (!draft || !box) return;
+            const config = getTrackingSessionConfig(kind);
+            const className = draft.className || draft.class || '';
+            const query = String(trackingSetupState[kind].search || '').trim().toLocaleLowerCase('ar');
+            const students = sortStudentsAlphabetically((appState.students || []).filter(st => normalizeAcademicText(st.class) === normalizeAcademicText(className) && normalizeAcademicText(st.section) === normalizeAcademicText(draft.section) && normalizeAcademicText(st.studyType || 'صباحي') === normalizeAcademicText(draft.studyType || 'صباحي') && (!query || String(st.name || '').toLocaleLowerCase('ar').includes(query))));
+            box.innerHTML = students.length ? students.map((st,index) => {
+                const existing = String((draft.records || {})[String(st.id)] || '');
+                const individualButtons = config.marks.map(mark => {
+                    const selected = existing === mark;
+                    const color = mark === 'مميز' || mark === 'مكتمل' ? 'emerald' : mark === 'متوسط' || mark === 'مكتمل جزئياً' ? 'amber' : 'rose';
+                    const studentId = String(st.id).replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+                    return `<button type="button" onclick="setTrackingSessionMark('${kind}','${studentId}','${mark}')" class="flex-1 rounded-xl border border-${color}-200 bg-${selected?color+'-100':color+'-50'} text-${color}-800 py-2 text-[9px] font-black ${selected?'ring-2 ring-offset-1 ring-'+color+'-300':''}">${mark}</button>`;
+                }).join('');
+                const safeStudentId = String(st.id).replace(/'/g, "\\'");
+                const homeworkNote = kind === 'homework' ? `<textarea oninput="setTrackingSessionNote('homework','${safeStudentId}',this.value)" rows=2 maxlength=2000 placeholder="ملاحظة اختيارية عن إنجاز الواجب..." class="w-full mt-2 p-2 rounded-xl bg-slate-50 border border-slate-200 text-[10px] font-bold">${escapeHtml((trackingSessionDrafts[kind].notes || {})[String(st.id)] || '')}</textarea>` : '';
+                return `<article class="bg-white border border-slate-200 rounded-2xl p-3"><div class="flex justify-between items-start gap-2 mb-2"><div class="flex items-start gap-2"><span class="w-6 h-6 rounded-full bg-slate-100 flex items-center justify-center text-[10px] font-black">${index+1}</span><div><h4 class="font-black text-xs text-slate-800">${escapeHtml(st.name)}</h4><p class="text-[9px] text-slate-400">${escapeHtml(st.class)} · شعبة ${escapeHtml(st.section)} · ${escapeHtml(st.studyType || 'صباحي')}</p></div></div><span class="text-[9px] font-black rounded-full px-2 py-1 ${existing?'bg-emerald-50 text-emerald-700':'bg-slate-100 text-slate-500'}">${escapeHtml(existing || 'لم يُقيّم')}</span></div><div class="flex gap-1.5 pt-2 border-t border-slate-100">${individualButtons}</div>${homeworkNote}</article>`;
+            }).join('') : '<div class="bg-white rounded-2xl p-5 text-center text-xs text-slate-400 border">لا يوجد طلبة مطابقون للبحث</div>';
         }
 
-        function ensureHomeworkRecord(studentId) {
-            const state = homeworkTrackingState;
+        function setTrackingSessionNote(kind, studentId, note) {
+            const draft = trackingSessionDrafts[kind];
+            if (!draft || kind !== 'homework') return;
+            if (!draft.notes || typeof draft.notes !== 'object') draft.notes = {};
+            draft.notes[String(studentId)] = String(note || '');
+        }
+
+        function setTrackingSessionMark(kind, studentId, mark) {
+            const draft = trackingSessionDrafts[kind];
+            const config = getTrackingSessionConfig(kind);
+            if (!draft || !config.marks.includes(mark)) return;
             const student = (appState.students || []).find(st => String(st.id) === String(studentId));
-            const title = String(state.title || '').trim();
-            if (!student) { showToast('تعذر العثور على الطالب', 'error'); return null; }
-            if (!title) { showToast('اكتب اسم الواجب أولاً', 'error'); const input = document.getElementById('homework-title-input'); if (input) input.focus(); return null; }
-            if (!Array.isArray(appState.homeworkRecords)) appState.homeworkRecords = [];
-            let record = findHomeworkRecord(student.id, state.date, title);
-            if (!record) {
-                record = { id: Date.now() + Math.random(), studentId: student.id, studentName: student.name, class: student.class, section: student.section, studyType: student.studyType || 'صباحي', date: state.date, title, status: 'غير مكتمل', evaluation: 'غير مكتمل', note: '', text: '', createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() };
-                appState.homeworkRecords.push(record);
-            }
-            record.studentName = student.name; record.class = student.class; record.section = student.section; record.studyType = student.studyType || 'صباحي'; record.title = title; record.date = state.date;
-            return record;
+            if (!student || normalizeAcademicText(student.class) !== normalizeAcademicText(draft.className || draft.class) || normalizeAcademicText(student.section) !== normalizeAcademicText(draft.section) || normalizeAcademicText(student.studyType || 'صباحي') !== normalizeAcademicText(draft.studyType || 'صباحي')) return;
+            if (!draft.records || typeof draft.records !== 'object') draft.records = {};
+            draft.records[String(studentId)] = mark;
+            renderTrackingSessionRosterOnly(kind);
         }
 
-        function setStudentHomeworkStatus(studentId, status) {
-            captureHomeworkTrackingControls();
-            const record = ensureHomeworkRecord(studentId);
-            if (!record) return;
-            record.status = status; record.evaluation = status; record.updatedAt = new Date().toISOString();
-            persistLocalState();
-            renderHomeworkStudentList();
-            showToast(`تم حفظ حالة الواجب: ${status}`);
+        function openTrackingSession(kind) {
+            captureTrackingSessionSetup(kind);
+            const state = trackingSetupState[kind];
+            if (!state || !state.classValue || state.classValue === 'all') { showToast('اختر الصف والشعبة أولاً', 'error'); return; }
+            const cls = parseClassSelection(state.classValue);
+            if (kind === 'homework' && !String(state.title || '').trim()) { showToast('اكتب اسم الواجب قبل فتح الجلسة', 'error'); document.getElementById('tracking-title-input')?.focus(); return; }
+            const date = state.date || new Date().toISOString().slice(0,10);
+            const subject = kind === 'behavior' ? String(state.subject || '').trim() : '';
+            const title = kind === 'homework' ? String(state.title || '').trim() : '';
+            const existing = getTrackingSessionArray(kind).find(session => String(session.date || '') === date && normalizeAcademicText(session.className || session.class) === normalizeAcademicText(cls.name) && normalizeAcademicText(session.section) === normalizeAcademicText(cls.section) && normalizeAcademicText(session.studyType || 'صباحي') === normalizeAcademicText(cls.studyType || 'صباحي') && (kind !== 'homework' || normalizeAcademicText(session.title) === normalizeAcademicText(title)) && (kind !== 'behavior' || normalizeAcademicText(session.subject || '') === normalizeAcademicText(subject)));
+            trackingSessionDrafts[kind] = existing ? { ...existing, records: { ...(existing.records || {}) }, notes: { ...(existing.notes || {}) }, className: existing.className || existing.class || '' } : { id: Date.now() + Math.random(), kind, date, className: cls.name, class: cls.name, section: cls.section, studyType: cls.studyType || 'صباحي', subject, title, records: {}, notes: {}, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() };
+            state.classValue = `${trackingSessionDrafts[kind].className || cls.name} - ${trackingSessionDrafts[kind].section} - ${trackingSessionDrafts[kind].studyType || 'صباحي'}`;
+            state.date = trackingSessionDrafts[kind].date;
+            if (kind === 'behavior') state.subject = trackingSessionDrafts[kind].subject || '';
+            if (kind === 'homework') state.title = trackingSessionDrafts[kind].title || '';
+            state.search = '';
+            renderTrackingSessionTab(kind, document.getElementById('behavior-subtab-body'));
+            showToast(existing ? 'تم فتح الجلسة السابقة للتعديل' : 'تم فتح جلسة جديدة؛ احفظها بعد إكمال التقييمات');
         }
 
-        function toggleHomeworkNoteEditor(studentId) {
-            captureHomeworkTrackingControls();
-            if (String(homeworkTrackingState.noteStudentId) === String(studentId)) homeworkTrackingState.noteStudentId = null;
-            else homeworkTrackingState.noteStudentId = studentId;
-            renderHomeworkStudentList();
+        function openTrackingSessionById(kind, sessionId) {
+            const session = getTrackingSessionArray(kind).find(item => String(item.id) === String(sessionId));
+            if (!session) { showToast('الجلسة غير موجودة', 'error'); return; }
+            trackingSetupState[kind] = { ...trackingSetupState[kind], classValue: `${session.className || session.class} - ${session.section} - ${session.studyType || 'صباحي'}`, date: session.date || new Date().toISOString().slice(0,10), subject: session.subject || '', title: session.title || '', search: '' };
+            trackingSessionDrafts[kind] = { ...session, className: session.className || session.class || '', records: { ...(session.records || {}) }, notes: { ...(session.notes || {}) } };
+            renderTrackingSessionTab(kind, document.getElementById('behavior-subtab-body'));
         }
 
-        function saveHomeworkStudentNote(studentId) {
-            captureHomeworkTrackingControls();
-            const safeId = String(studentId).replace(/[^\w-]/g, '_');
-            const note = String(document.getElementById('homework-note-' + safeId)?.value || '').trim();
-            if (!note) { showToast('اكتب الملاحظة أولاً', 'error'); return; }
-            const record = ensureHomeworkRecord(studentId);
-            if (!record) return;
-            record.note = note; record.text = note; record.updatedAt = new Date().toISOString();
-            persistLocalState();
-            homeworkTrackingState.noteStudentId = null;
-            renderHomeworkStudentList();
-            showToast('تم حفظ ملاحظة الواجب للطالب');
+        function closeTrackingSession(kind) {
+            trackingSessionDrafts[kind] = null;
+            trackingSetupState[kind].search = '';
+            renderTrackingSessionTab(kind, document.getElementById('behavior-subtab-body'));
         }
 
-        function captureActivityTrackingControls() {
-            const cls = document.getElementById('activity-class-select');
-            const search = document.getElementById('activity-student-search');
-            const date = document.getElementById('activity-date-select');
-            if (cls) activityTrackingState.classValue = cls.value || 'all';
-            if (search) activityTrackingState.search = search.value || '';
-            if (date) activityTrackingState.date = date.value || new Date().toISOString().slice(0,10);
-        }
-
-        function renderActivityTrackingTab(container) {
-            if (!container) return;
-            const state = activityTrackingState;
-            container.innerHTML = `<div class="space-y-3.5"><div class="bg-emerald-500/10 border border-emerald-500/20 p-3 rounded-2xl flex items-center gap-2.5"><span class="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center"><i class="fa-solid fa-person-running text-lg"></i></span><div><h4 class="font-extrabold text-xs text-slate-800">تقييم نشاط الطلبة</h4><p class="text-[10px] text-slate-500">حدد الصف والشعبة والتاريخ ثم قيّم نشاط كل طالب</p></div></div>
-                <div class="bg-white rounded-3xl p-3.5 shadow-sm border border-slate-200/80 space-y-2.5"><div><label class="block text-[10px] font-extrabold text-slate-600 mb-1">الصف والشعبة والدراسة</label><select id="activity-class-select" onchange="captureActivityTrackingControls(); renderActivityTrackingTab(document.getElementById('behavior-subtab-body'))" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2 text-xs font-bold">${getTrackingClassOptions(state.classValue)}</select></div><div><label class="block text-[10px] font-extrabold text-slate-600 mb-1">التاريخ</label><input id="activity-date-select" type="date" value="${escapeHtml(state.date)}" onchange="captureActivityTrackingControls(); renderActivityTrackingTab(document.getElementById('behavior-subtab-body'))" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2 text-xs font-bold"></div></div>
-                <div><label class="block text-[10px] font-extrabold text-slate-600 mb-1">بحث عن اسم طالب</label><input id="activity-student-search" type="search" value="${escapeHtml(state.search)}" oninput="captureActivityTrackingControls(); renderActivityStudentList()" placeholder="اكتب اسم الطالب..." class="w-full bg-white border border-slate-200 rounded-xl p-2.5 text-xs font-bold"></div><div id="activity-students-list" class="space-y-2"></div></div>`;
-            renderActivityStudentList();
-        }
-
-        function renderActivityStudentList() {
-            captureActivityTrackingControls();
-            const box = document.getElementById('activity-students-list');
-            if (!box) return;
-            const state = activityTrackingState;
-            const students = getTrackingFilteredStudents(state.classValue, state.search);
-            if (!students.length) { box.innerHTML = '<div class="bg-white rounded-3xl p-5 text-center border border-slate-200 text-xs text-slate-400">لا يوجد طلبة مطابقون للفلاتر</div>'; return; }
-            box.innerHTML = students.map((st, index) => {
-                const idArg = String(st.id).replace(/\\/g, '\\\\').replace(/'/g, "\\'");
-                const record = (appState.studentActivities || []).find(r => String(r.studentId) === String(st.id) && String(r.date || '') === String(state.date || ''));
-                const mark = record?.mark || '';
-                const buttonStyle = value => mark === value ? 'ring-2 ring-offset-1 ring-emerald-400 font-black' : '';
-                return `<article class="bg-white rounded-2xl p-3 shadow-sm border border-slate-200/80"><div class="flex items-center justify-between mb-2"><div class="flex items-center gap-2.5"><span class="w-6 h-6 rounded-full bg-slate-100 text-slate-700 text-xs font-bold flex items-center justify-center">${index+1}</span><div><h4 class="font-bold text-xs text-slate-800">${escapeHtml(st.name)}</h4><p class="text-[10px] text-slate-400">${escapeHtml(st.class)} (${escapeHtml(st.section)}) · ${escapeHtml(st.studyType || 'صباحي')}</p></div></div><span class="text-[10px] font-extrabold px-2.5 py-1 rounded-full ${mark==='مميز'?'bg-emerald-50 text-emerald-700':mark==='متوسط'?'bg-amber-50 text-amber-800':mark==='ضعيف'?'bg-rose-50 text-rose-700':'bg-slate-100 text-slate-500'}">${escapeHtml(mark || 'غير مقيم')}</span></div><div class="text-[10px] text-slate-400 mb-2">تاريخ التقييم: ${escapeHtml(state.date)}</div><div class="flex items-center gap-1.5 pt-2 border-t border-slate-100"><button onclick="assignStudentActivity('${idArg}','مميز')" class="flex-1 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 py-2 rounded-xl text-[10px] ${buttonStyle('مميز')}">مميز</button><button onclick="assignStudentActivity('${idArg}','متوسط')" class="flex-1 bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 py-2 rounded-xl text-[10px] ${buttonStyle('متوسط')}">متوسط</button><button onclick="assignStudentActivity('${idArg}','ضعيف')" class="flex-1 bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 py-2 rounded-xl text-[10px] ${buttonStyle('ضعيف')}">ضعيف</button></div></article>`;
-            }).join('');
-        }
-
-        function assignStudentActivity(studentId, mark) {
-            captureActivityTrackingControls();
-            const student = (appState.students || []).find(st => String(st.id) === String(studentId));
-            if (!student) { showToast('تعذر العثور على الطالب', 'error'); return; }
-            if (!Array.isArray(appState.studentActivities)) appState.studentActivities = [];
-            let record = appState.studentActivities.find(r => String(r.studentId) === String(studentId) && String(r.date || '') === String(activityTrackingState.date || ''));
-            if (!record) {
-                record = { id: Date.now() + Math.random(), studentId: student.id, studentName: student.name, class: student.class, section: student.section, studyType: student.studyType || 'صباحي', date: activityTrackingState.date, mark, createdAt: new Date().toISOString() };
-                appState.studentActivities.push(record);
-            }
-            Object.assign(record, { studentName: student.name, class: student.class, section: student.section, studyType: student.studyType || 'صباحي', date: activityTrackingState.date, mark, updatedAt: new Date().toISOString() });
-            persistLocalState();
-            renderActivityStudentList();
-            showToast(`تم تسجيل تقييم النشاط (${mark}) للطالب ${student.name}`);
-        }
-
-        function renderBehaviorMarksTab(container) {
-            let classOptions = appState.classes.map(c => `
-                <option value="${c.name} - ${c.section} - ${c.studyType || 'صباحي'}">${c.name} (شعبة ${c.section} - ${c.studyType || 'صباحي'})</option>
-            `).join('');
-
-            let subOpts = getAllRegisteredSubjectNames().map(s => `<option value="${escapeHtml(s)}">${escapeHtml(s)}</option>`).join('');
-
-            container.innerHTML = `
-                <div class="space-y-3.5">
-                    <div class="bg-amber-500/10 border border-amber-500/20 p-3 rounded-2xl flex justify-between items-center">
-                        <div class="flex items-center gap-2.5">
-                            <i class="fa-solid fa-award text-amber-600 text-lg"></i>
-                            <div>
-                                <h4 class="font-extrabold text-xs text-slate-800">سجل النشاط والمتابعة المدرسية</h4>
-                                <p class="text-[10px] text-slate-500">إضافة علامة للطالب حسب الصف والشعبة ونوع الدراسة</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="bg-white rounded-3xl p-3.5 shadow-sm border border-slate-200/80 space-y-2.5">
-                        <div>
-                            <label class="block text-[10px] font-extrabold text-slate-600 mb-1">الصف والشعبة والدراسة:</label>
-                            <select id="beh-filter-class" onchange="updateBehaviorSubjectOptions(); renderBehaviorStudentsList()" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2 text-xs font-bold text-slate-700 outline-none">
-                                <option value="all">جميع الصفوف والشعب</option>
-                                ${classOptions}
-                            </select>
-                        </div>
-                        <div class="grid grid-cols-2 gap-2">
-                            <div>
-                                <label class="block text-[10px] font-extrabold text-slate-600 mb-1">المادة الدراسية:</label>
-                                <select id="beh-filter-subject" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2 text-xs font-bold text-slate-700 outline-none">
-                                    ${subOpts || '<option>عام</option>'}
-                                </select>
-                            </div>
-                            <div>
-                                <label class="block text-[10px] font-extrabold text-slate-600 mb-1">التاريخ:</label>
-                                <input id="beh-filter-date" type="date" value="${new Date().toISOString().split('T')[0]}" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2 text-xs font-bold text-slate-700 outline-none">
-                            </div>
-                        </div>
-                    </div>
-
-                    <div><label class="block text-[10px] font-extrabold text-slate-600 mb-1">بحث عن اسم طالب:</label><input id="beh-student-search" type="search" oninput="renderBehaviorStudentsList()" placeholder="اكتب اسم الطالب..." class="w-full bg-white border border-slate-200 rounded-xl p-2.5 text-xs font-bold"></div><div id="behavior-students-list" class="space-y-2"></div><div id="behavior-session-history" class="space-y-2 mt-4"></div>
-                </div>
-            `;
-
-            updateBehaviorSubjectOptions();
-            renderBehaviorStudentsList();
-        }
-
-        function renderBehaviorStudentsList() {
-            const classFilterVal = document.getElementById('beh-filter-class') ? document.getElementById('beh-filter-class').value : 'all';
-            const container = document.getElementById('behavior-students-list');
-            if (!container) return;
-
-            let filtered = [...appState.students];
-
-            if (classFilterVal !== 'all') {
-                const [cName, sSec, sStudy] = classFilterVal.split(' - ');
-                filtered = filtered.filter(s => 
-                    s.class.trim() === cName.trim() && 
-                    s.section.trim() === sSec.trim() && 
-                    (s.studyType || 'صباحي').trim() === sStudy.trim()
-                );
-            }
-
-            const behaviorSearch = String(document.getElementById('beh-student-search')?.value || '').trim().toLocaleLowerCase('ar');
-            if (behaviorSearch) filtered = filtered.filter(student => String(student.name || '').toLocaleLowerCase('ar').includes(behaviorSearch));
-            const chosenBehaviorSubject = document.getElementById('beh-filter-subject') ? document.getElementById('beh-filter-subject').value : '';
-            if (chosenBehaviorSubject) filtered = filtered.filter(student => isSubjectAssignedToStudentClass(chosenBehaviorSubject, student));
-            filtered = sortStudentsAlphabetically(filtered);
-
-            if (filtered.length === 0) {
-                container.innerHTML = `
-                    <div class="bg-white rounded-3xl p-5 text-center border border-slate-200/80">
-                        <i class="fa-solid fa-users-slash text-slate-300 text-3xl mb-2"></i>
-                        <p class="text-xs text-slate-500 font-bold">لا يوجد طلبة مطابقين للفلاتر المحددة</p>
-                    </div>
-                `;
-                renderBehaviorSessionHistory();
-                return;
-            }
-
-            let html = filtered.map((st, i) => {
-                let badgeClass = 'bg-slate-100 text-slate-700';
-                if (st.behavior === 'مميز') badgeClass = 'bg-emerald-50 text-emerald-700 border border-emerald-200';
-                else if (st.behavior === 'متوسط') badgeClass = 'bg-amber-50 text-amber-700 border border-amber-200';
-                else if (st.behavior === 'سيء') badgeClass = 'bg-rose-50 text-rose-700 border border-rose-200';
-
-                return `
-                    <div class="bg-white rounded-2xl p-3 shadow-sm border border-slate-200/80 mb-2">
-                        <div class="flex items-center justify-between mb-2">
-                            <div class="flex items-center gap-2.5">
-                                <span class="w-6 h-6 rounded-full bg-slate-100 text-slate-700 text-xs font-bold flex items-center justify-center">${i+1}</span>
-                                <div>
-                                    <h4 class="font-bold text-xs text-slate-800">${st.name}</h4>
-                                    <p class="text-[10px] text-slate-400">${st.class} (${st.section}) - <strong class="text-indigo-600">${st.studyType || 'صباحي'}</strong></p>
-                                </div>
-                            </div>
-                            <span class="text-[10px] font-extrabold px-2.5 py-0.5 rounded-full ${badgeClass}" id="beh-badge-${st.id}">
-                                ${st.behavior || 'غير محدد'}
-                            </span>
-                        </div>
-                        <div class="flex items-center gap-1.5 pt-2 border-t border-slate-100">
-                            <span class="text-[10px] font-bold text-slate-500 ml-1">إضافة علامة:</span>
-                            <button onclick="assignStudentMark(${st.id}, 'مميز')" class="flex-1 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 py-1 rounded-xl text-[10px] font-black transition-all flex items-center justify-center gap-1">
-                                <i class="fa-solid fa-star text-[9px]"></i>
-                                <span>مميز</span>
-                            </button>
-                            <button onclick="assignStudentMark(${st.id}, 'متوسط')" class="flex-1 bg-amber-50 hover:bg-amber-100 text-amber-700 border border-amber-200 py-1 rounded-xl text-[10px] font-black transition-all flex items-center justify-center gap-1">
-                                <i class="fa-solid fa-minus text-[9px]"></i>
-                                <span>متوسط</span>
-                            </button>
-                            <button onclick="assignStudentMark(${st.id}, 'سيء')" class="flex-1 bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 py-1 rounded-xl text-[10px] font-black transition-all flex items-center justify-center gap-1">
-                                <i class="fa-solid fa-triangle-exclamation text-[9px]"></i>
-                                <span>سيء</span>
-                            </button>
-                        </div>
-                    </div>
-                `;
-            }).join('');
-
-            container.innerHTML = html;
-            renderBehaviorSessionHistory();
-        }
-
-        function renderBehaviorSessionHistory() {
-            const box = document.getElementById('behavior-session-history'); if (!box) return;
-            const classVal = document.getElementById('beh-filter-class')?.value || 'all';
-            const subjectVal = document.getElementById('beh-filter-subject')?.value || '';
-            const dateVal = document.getElementById('beh-filter-date')?.value || '';
-            const cls = parseClassSelection(classVal);
-            const all = [];
-            (appState.students || []).forEach(st => (st.behaviorLog || []).forEach((r, index) => {
-                if (subjectVal && normalizeAcademicText(r.subject) !== normalizeAcademicText(subjectVal)) return;
-                // يعرض سجل الجلسات السابقة كلها؛ التاريخ يحدد جلسة الإدخال الجديدة فقط.
-                if (classVal !== 'all' && (normalizeAcademicText(r.stage || st.class) !== normalizeAcademicText(cls.name) || normalizeAcademicText(r.section ?? st.section) !== normalizeAcademicText(cls.section) || normalizeAcademicText(r.studyType || st.studyType || 'صباحي') !== normalizeAcademicText(cls.studyType || 'صباحي'))) return;
-                all.push({st, r, index});
-            }));
-            const groups = new Map(); all.forEach(x => { const k=[x.r.date||'',x.r.stage||x.st.class,x.r.section??x.st.section,x.r.studyType||x.st.studyType||'صباحي',x.r.subject||''].join('|'); if(!groups.has(k)) groups.set(k,{key:k,date:x.r.date||'',className:x.r.stage||x.st.class,section:x.r.section??x.st.section,studyType:x.r.studyType||x.st.studyType||'صباحي',subject:x.r.subject||'',items:[]}); groups.get(k).items.push(x); });
-            box.innerHTML = `<h4 class="font-black text-xs text-slate-700 px-1">الجلسات المسجلة سابقاً</h4>` + (groups.size ? [...groups.values()].sort((a,b)=>b.date.localeCompare(a.date)).map((g,i)=>`<article class="bg-white border rounded-2xl p-3"><div class="flex justify-between gap-2"><b class="text-xs">جلسة ${i+1} · ${escapeHtml(g.subject||'السلوك')}</b><span class="text-[9px] text-slate-400">${escapeHtml(g.date)}</span></div><p class="text-[10px] text-slate-500 mt-1">${escapeHtml(g.className)} · شعبة ${escapeHtml(g.section)} · ${g.items.length} تقييم</p><div class="grid grid-cols-2 gap-2 mt-2"><button onclick="editBehaviorSession('${encodeURIComponent(g.key)}')" class="rounded-xl bg-sky-50 text-sky-700 py-2 text-[10px] font-black">تعديل الجلسة</button><button onclick="deleteBehaviorSession('${encodeURIComponent(g.key)}')" class="rounded-xl bg-rose-50 text-rose-700 py-2 text-[10px] font-black">حذف الجلسة</button></div></article>`).join('') : `<div class="bg-white border rounded-2xl p-4 text-center text-xs text-slate-400">لا توجد جلسات سلوك مطابقة للصف والمادة المحددة</div>`);
-        }
-        function editBehaviorSession(encodedKey) {
-            const key=decodeURIComponent(encodedKey); let found=null;
-            (appState.students||[]).some(st=>(st.behaviorLog||[]).some(r=>{const k=[r.date||'',r.stage||st.class,r.section??st.section,r.studyType||st.studyType||'صباحي',r.subject||''].join('|');if(k===key){found={r,st};return true;}return false;}));
-            if(!found)return;
-            const date=prompt('تعديل تاريخ الجلسة (YYYY-MM-DD):',found.r.date||'');if(date===null)return;
-            if(date&&!/^\d{4}-\d{2}-\d{2}$/.test(date)){showToast('صيغة التاريخ غير صحيحة','error');return;}
-            const subject=prompt('تعديل المادة/عنوان الجلسة:',found.r.subject||'');if(subject===null)return;
-            (appState.students||[]).forEach(st=>(st.behaviorLog||[]).forEach(r=>{if([r.date||'',r.stage||st.class,r.section??st.section,r.studyType||st.studyType||'صباحي',r.subject||''].join('|')===key){r.date=date||r.date;r.subject=subject.trim();r.updatedAt=new Date().toISOString();}}));
-            persistLocalState();renderBehaviorStudentsList();showToast('تم تعديل الجلسة');
-        }
-        function deleteBehaviorSession(encodedKey) {
-            const key=decodeURIComponent(encodedKey);if(!confirm('حذف جلسة السلوك المحددة وجميع تقييماتها؟'))return;
-            (appState.students||[]).forEach(st=>{st.behaviorLog=(st.behaviorLog||[]).filter(r=>[r.date||'',r.stage||st.class,r.section??st.section,r.studyType||st.studyType||'صباحي',r.subject||''].join('|')!==key);});
-            persistLocalState();renderBehaviorStudentsList();showToast('تم حذف الجلسة وتقييماتها');
-        }
-        function renderHomeworkSessionHistory() {
-            const box=document.getElementById('homework-session-history');if(!box)return;
-            const state=homeworkTrackingState;const cls=parseClassSelection(state.classValue||'all');
-            const records=(appState.homeworkRecords||[]).filter(r=>(!state.title||normalizeAcademicText(r.title)===normalizeAcademicText(state.title))&&((state.classValue||'all')==='all'||(normalizeAcademicText(r.class)===normalizeAcademicText(cls.name)&&normalizeAcademicText(r.section)===normalizeAcademicText(cls.section)&&normalizeAcademicText(r.studyType||'صباحي')===normalizeAcademicText(cls.studyType||'صباحي'))));
-            const groups=new Map();records.forEach(r=>{const k=[r.date||'',r.class||'',r.section||'',r.studyType||'صباحي',r.title||''].join('|');if(!groups.has(k))groups.set(k,{key:k,date:r.date||'',className:r.class||'',section:r.section||'',studyType:r.studyType||'صباحي',title:r.title||'',items:[]});groups.get(k).items.push(r);});
-            box.innerHTML='<h4 class="font-black text-xs text-slate-700 px-1">جلسات الواجبات المسجلة سابقاً</h4>'+(groups.size?[...groups.values()].sort((a,b)=>b.date.localeCompare(a.date)).map((g,i)=>`<article class="bg-white border rounded-2xl p-3"><div class="flex justify-between gap-2"><b class="text-xs">${escapeHtml(g.title||'واجب')}</b><span class="text-[9px] text-slate-400">${escapeHtml(g.date)}</span></div><p class="text-[10px] text-slate-500 mt-1">${escapeHtml(g.className)} · شعبة ${escapeHtml(g.section)} · ${g.items.length} طالب</p><div class="grid grid-cols-2 gap-2 mt-2"><button onclick="editHomeworkSession('${encodeURIComponent(g.key)}')" class="rounded-xl bg-sky-50 text-sky-700 py-2 text-[10px] font-black">تعديل الجلسة</button><button onclick="deleteHomeworkSession('${encodeURIComponent(g.key)}')" class="rounded-xl bg-rose-50 text-rose-700 py-2 text-[10px] font-black">حذف الجلسة</button></div></article>`).join(''):'<div class="bg-white border rounded-2xl p-4 text-center text-xs text-slate-400">لا توجد جلسات واجبات مطابقة</div>');
-        }
-        function editHomeworkSession(encodedKey) {
-            const key=decodeURIComponent(encodedKey);const first=(appState.homeworkRecords||[]).find(r=>[r.date||'',r.class||'',r.section||'',r.studyType||'صباحي',r.title||''].join('|')===key);if(!first)return;
-            const date=prompt('تعديل تاريخ الجلسة (YYYY-MM-DD):',first.date||'');if(date===null)return;if(date&&!/^\d{4}-\d{2}-\d{2}$/.test(date)){showToast('صيغة التاريخ غير صحيحة','error');return;}
-            const title=prompt('تعديل اسم الواجب:',first.title||'');if(title===null)return;if(!title.trim()){showToast('اسم الواجب مطلوب','error');return;}
-            (appState.homeworkRecords||[]).forEach(r=>{if([r.date||'',r.class||'',r.section||'',r.studyType||'صباحي',r.title||''].join('|')===key){r.date=date||r.date;r.title=title.trim();r.updatedAt=new Date().toISOString();}});
-            homeworkTrackingState.date=date||first.date;homeworkTrackingState.title=title.trim();persistLocalState();renderHomeworkTrackingTab(document.getElementById('behavior-subtab-body'));showToast('تم تعديل جلسة الواجب');
-        }
-        function deleteHomeworkSession(encodedKey) {
-            const key=decodeURIComponent(encodedKey);if(!confirm('حذف جلسة الواجب المحددة وجميع تقييماتها وملاحظاتها؟'))return;
-            appState.homeworkRecords=(appState.homeworkRecords||[]).filter(r=>[r.date||'',r.class||'',r.section||'',r.studyType||'صباحي',r.title||''].join('|')!==key);
-            persistLocalState();renderHomeworkTrackingTab(document.getElementById('behavior-subtab-body'));showToast('تم حذف جلسة الواجب');
-        }
-
-        function assignStudentMark(studentId, mark) {
-            const student = appState.students.find(s => s.id === studentId);
-            if (!student) return;
-
-            const dateVal = document.getElementById('beh-filter-date').value || new Date().toISOString().split('T')[0];
-            const subjectVal = document.getElementById('beh-filter-subject').value || '';
-            if (!subjectVal || !isSubjectAssignedToStudentClass(subjectVal, student)) {
-                showToast('المادة المختارة غير مرتبطة بصف هذا الطالب وشعبته ونوع دراسته', 'error');
-                return;
-            }
-
-            student.behavior = mark;
-            if (!student.behaviorLog) student.behaviorLog = [];
-
-            student.behaviorLog.push({
-                mark: mark,
-                stage: student.class,
-                section: student.section,
-                studyType: student.studyType || "صباحي",
-                subject: subjectVal,
-                date: dateVal
+        function syncTrackingSessionToStudentRecords(kind, session) {
+            if (kind === 'behavior') return;
+            const isHomework = kind === 'homework';
+            const targetKey = isHomework ? 'homeworkRecords' : 'studentActivities';
+            const target = Array.isArray(appState[targetKey]) ? appState[targetKey] : (appState[targetKey] = []);
+            const ids = Object.keys(session.records || {});
+            // Remove previous mirrors and legacy rows for the same session before rebuilding the student view.
+            appState[targetKey] = target.filter(record => {
+                if (String(record.sessionId || '') === String(session.id)) return false;
+                const sameDate = String(record.date || '') === String(session.date || '');
+                const sameClass = normalizeAcademicText(record.class || record.stage) === normalizeAcademicText(session.className || session.class) && normalizeAcademicText(record.section) === normalizeAcademicText(session.section) && normalizeAcademicText(record.studyType || 'صباحي') === normalizeAcademicText(session.studyType || 'صباحي');
+                const sameTitle = !isHomework || normalizeAcademicText(record.title || '') === normalizeAcademicText(session.title || '');
+                return !(sameDate && sameClass && sameTitle && Object.prototype.hasOwnProperty.call(session.records || {}, String(record.studentId)));
             });
+            ids.forEach(studentId => {
+                const student = (appState.students || []).find(st => String(st.id) === String(studentId));
+                if (!student) return;
+                const mark = String(session.records[studentId] || '').trim();
+                if (!mark) return;
+                const base = { id: Date.now() + Math.random(), sessionId: session.id, studentId: student.id, studentName: student.name, class: session.className || session.class, section: session.section, studyType: session.studyType || 'صباحي', date: session.date, createdAt: session.createdAt || new Date().toISOString(), updatedAt: session.updatedAt || new Date().toISOString() };
+                if (isHomework) appState.homeworkRecords.push({ ...base, title: session.title || 'واجب', status: mark, evaluation: mark, note: (session.notes || {})[studentId] || '', text: (session.notes || {})[studentId] || '' });
+                else appState.studentActivities.push({ ...base, mark });
+            });
+        }
 
-            const badge = document.getElementById(`beh-badge-${student.id}`);
-            if (badge) {
-                badge.innerText = mark;
-                badge.className = `text-[10px] font-extrabold px-2.5 py-0.5 rounded-full ${mark === 'مميز' ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : mark === 'متوسط' ? 'bg-amber-50 text-amber-700 border border-amber-200' : 'bg-rose-50 text-rose-700 border border-rose-200'}`;
-            }
-
+        function saveTrackingSession(kind) {
+            const draft = trackingSessionDrafts[kind];
+            if (!draft) { showToast('افتح جلسة أولاً', 'error'); return; }
+            const config = getTrackingSessionConfig(kind);
+            const target = getTrackingSessionArray(kind);
+            const saved = { ...draft, records: { ...(draft.records || {}) }, notes: { ...(draft.notes || {}) }, updatedAt: new Date().toISOString() };
+            const index = target.findIndex(session => String(session.id) === String(saved.id));
+            if (index >= 0) target[index] = saved; else target.push(saved);
+            trackingSessionDrafts[kind] = { ...saved, records: { ...saved.records }, notes: { ...saved.notes } };
+            syncTrackingSessionToStudentRecords(kind, saved);
             persistLocalState();
-            showToast(`تم إضافة علامة (${mark}) للطالب ${student.name} بنجاح!`);
+            renderTrackingSessionTab(kind, document.getElementById('behavior-subtab-body'));
+            showToast(`تم حفظ جلسة ${config.singular} بنجاح`);
+        }
+
+        function deleteTrackingSession(kind, sessionId) {
+            const session = getTrackingSessionArray(kind).find(item => String(item.id) === String(sessionId));
+            if (!session) { showToast('الجلسة غير موجودة', 'error'); return; }
+            if (!confirm(`هل تريد حذف جلسة ${getTrackingSessionConfig(kind).singular} بتاريخ ${session.date || ''}؟`)) return;
+            const key = getTrackingSessionConfig(kind).arrayKey;
+            appState[key] = getTrackingSessionArray(kind).filter(item => String(item.id) !== String(sessionId));
+            if (kind === 'homework' || kind === 'activity') {
+                const targetKey = kind === 'homework' ? 'homeworkRecords' : 'studentActivities';
+                appState[targetKey] = (appState[targetKey] || []).filter(record => {
+                    if (String(record.sessionId || '') === String(sessionId)) return false;
+                    const sameClass = normalizeAcademicText(record.class || record.stage) === normalizeAcademicText(session.className || session.class) && normalizeAcademicText(record.section) === normalizeAcademicText(session.section) && normalizeAcademicText(record.studyType || 'صباحي') === normalizeAcademicText(session.studyType || 'صباحي');
+                    const sameDate = String(record.date || '') === String(session.date || '');
+                    const sameTitle = kind !== 'homework' || normalizeAcademicText(record.title || '') === normalizeAcademicText(session.title || '');
+                    // Only remove unlinked legacy mirrors belonging to the deleted session.
+                    const belongs = sameClass && sameDate && sameTitle && Object.prototype.hasOwnProperty.call(session.records || {}, String(record.studentId));
+                    return !belongs;
+                });
+            }
+            if (trackingSessionDrafts[kind] && String(trackingSessionDrafts[kind].id) === String(sessionId)) trackingSessionDrafts[kind] = null;
+            persistLocalState();
+            renderTrackingSessionTab(kind, document.getElementById('behavior-subtab-body'));
+            showToast('تم حذف الجلسة وسجلاتها المرتبطة');
         }
 
         // 4. Schedule Tab Rendering
@@ -3203,36 +3110,49 @@
             else if (activeReportKey === 'daily_grades_report') renderDailyGradesReportRows();
         }
 
+        function summarizeSessionCounts(sessions, student, labels, classValue, fromDate, toDate, exactDate, query) {
+            const counts = Object.fromEntries(labels.map(label => [label, 0]));
+            const textQuery = String(query || '').trim().toLocaleLowerCase('ar');
+            (sessions || []).forEach(session => {
+                if (!session) return;
+                const sessionClassValue = `${session.className || session.class || ''} - ${session.section || ''} - ${session.studyType || 'صباحي'}`;
+                if (classValue && classValue !== 'all' && !reportRecordMatchesClass({ class: session.className || session.class, section: session.section, studyType: session.studyType }, student, classValue)) return;
+                if (exactDate && String(session.date || '') !== exactDate) return;
+                if (!isWithinReportDateRange(session.date, fromDate, toDate)) return;
+                if (textQuery && !`${student.name || ''} ${session.title || ''} ${session.subject || ''} ${session.date || ''}`.toLocaleLowerCase('ar').includes(textQuery)) return;
+                const mark = String((session.records || {})[String(student.id)] || '').trim();
+                if (Object.prototype.hasOwnProperty.call(counts, mark)) counts[mark]++;
+            });
+            const values = labels.map(label => counts[label]);
+            const total = values.reduce((sum, value) => sum + value, 0);
+            const max = Math.max(0, ...values);
+            const leaders = labels.filter(label => counts[label] === max && max > 0);
+            return { counts, total, overall: total === 0 ? '—' : leaders.length === 1 ? leaders[0] : 'تعادل' };
+        }
+
         function updateHomeworkReportRows() {
             const tbody = document.getElementById('homework-report-body');
             if (!tbody) return;
             const classValue = document.getElementById('rep-homework-class')?.value || 'all';
             const dateValue = document.getElementById('rep-homework-date')?.value || '';
             const query = String(document.getElementById('rep-homework-search')?.value || '').trim().toLocaleLowerCase('ar');
-            const parsed = parseClassSelection(classValue);
             setPrintHeaderStageLabelUnified('rep-homework-stage', classValue);
-            const rows = (appState.homeworkRecords || []).filter(record => {
-                const student = (appState.students || []).find(st => String(st.id) === String(record.studentId));
-                const className = record.class || student?.class || '';
-                const section = record.section ?? student?.section ?? '';
-                const studyType = record.studyType || student?.studyType || 'صباحي';
-                const classMatches = classValue === 'all' || (normalizeAcademicText(className) === normalizeAcademicText(parsed.name) && normalizeAcademicText(section) === normalizeAcademicText(parsed.section) && normalizeAcademicText(studyType) === normalizeAcademicText(parsed.studyType || 'صباحي'));
-                const dateMatches = !dateValue || String(record.date || '') === dateValue;
-                const studentName = student?.name || record.studentName || '';
-                const textMatches = !query || `${studentName} ${record.title || ''} ${record.status || record.evaluation || ''} ${record.note || record.text || ''}`.toLocaleLowerCase('ar').includes(query);
-                return classMatches && dateMatches && textMatches;
-            }).slice().sort((a,b) => String(b.date || '').localeCompare(String(a.date || '')) || String(a.studentName || '').localeCompare(String(b.studentName || ''), 'ar') || String(a.title || '').localeCompare(String(b.title || ''), 'ar'));
-            tbody.innerHTML = rows.length ? rows.map((record, index) => {
-                const student = (appState.students || []).find(st => String(st.id) === String(record.studentId));
-                const status = record.status || record.evaluation || 'غير محدد';
-                return `<tr class="border-b border-slate-100 text-[10px]"><td class="p-2 text-center font-bold">${index+1}</td><td class="p-2 whitespace-nowrap">${escapeHtml(record.date || '')}</td><td class="p-2 font-bold">${escapeHtml(student?.name || record.studentName || 'طالب')}</td><td class="p-2">${escapeHtml(record.class || student?.class || '')} · ${escapeHtml(record.section ?? student?.section ?? '')}</td><td class="p-2">${escapeHtml(record.title || 'واجب')}</td><td class="p-2 font-black">${escapeHtml(status)}</td><td class="p-2 whitespace-pre-wrap">${escapeHtml(record.note || record.text || '—')}</td></tr>`;
-            }).join('') : '<tr><td colspan="7" class="p-4 text-center text-xs text-slate-400">لا توجد سجلات واجبات مطابقة للفلاتر</td></tr>';
+            const labels = ['مكتمل','مكتمل جزئياً','غير مكتمل'];
+            const students = sortStudentsAlphabetically((appState.students || []).filter(student => {
+                if (classValue !== 'all' && !reportRecordMatchesClass({ class: student.class, section: student.section, studyType: student.studyType || 'صباحي' }, student, classValue)) return false;
+                return !query || String(student.name || '').toLocaleLowerCase('ar').includes(query);
+            }));
+            const rows = students.map((student,index) => {
+                const summary = summarizeSessionCounts(appState.homeworkSessions, student, labels, classValue, '', '', dateValue, '');
+                return `<tr class="border-b border-slate-100 text-[10px]"><td class="p-2 text-center font-bold">${index+1}</td><td class="p-2 font-bold">${escapeHtml(student.name || '')}</td><td class="p-2 text-center font-black text-emerald-700">${summary.counts['مكتمل']}</td><td class="p-2 text-center font-black text-amber-700">${summary.counts['مكتمل جزئياً']}</td><td class="p-2 text-center font-black text-rose-700">${summary.counts['غير مكتمل']}</td><td class="p-2 text-center font-black">${escapeHtml(summary.overall)}</td></tr>`;
+            }).join('');
+            tbody.innerHTML = rows || '<tr><td colspan="6" class="p-4 text-center text-xs text-slate-400">لا توجد سجلات واجبات مطابقة للفلاتر</td></tr>';
         }
 
         function reportRecordMatchesClass(record, student, classValue) {
             if (!classValue || classValue === 'all') return true;
             const parts = parseClassSelection(classValue);
-            const name = record.stage || record.class || (student && student.class) || '';
+            const name = record.stage || record.className || record.class || (student && student.class) || '';
             const section = record.section != null ? record.section : (student && student.section) || '';
             const studyType = record.studyType || (student && student.studyType) || 'صباحي';
             return normalizeAcademicText(name) === normalizeAcademicText(parts.name) &&
@@ -3256,21 +3176,17 @@
             const query = String(document.getElementById('rep-behentries-search')?.value || '').trim().toLocaleLowerCase('ar');
             setPrintHeaderStageLabelUnified('rep-behentries-stage', classValue);
             const reportSubject = getSelectedReportSubject();
-            const rows = [];
-            (appState.students || []).forEach(student => {
-                (Array.isArray(student.behaviorLog) ? student.behaviorLog : []).forEach((record, idx) => {
-                    if (!record) return;
-                    const stageRecord = { ...record, stage: record.stage || student.class, section: record.section == null ? student.section : record.section, studyType: record.studyType || student.studyType || 'صباحي' };
-                    if (!reportRecordMatchesClass(stageRecord, student, classValue)) return;
-                    if (!isWithinReportDateRange(record.date, fromDate, toDate)) return;
-                    if (reportSubject !== 'all' && normalizeReportValue(record.subject) !== normalizeReportValue(reportSubject)) return;
-                    const text = `${student.name || ''} ${record.subject || ''} ${record.mark || ''} ${record.date || ''}`.toLocaleLowerCase('ar');
-                    if (query && !text.includes(query)) return;
-                    rows.push({ student, record, idx });
-                });
-            });
-            rows.sort((a,b) => String(b.record.date || '').localeCompare(String(a.record.date || '')) || String(a.student.name || '').localeCompare(String(b.student.name || ''), 'ar'));
-            tbody.innerHTML = rows.length ? rows.map((entry,index) => `<tr class="border-b border-slate-100 text-[10px]"><td class="p-2 text-center font-bold">${index+1}</td><td class="p-2 whitespace-nowrap">${escapeHtml(entry.record.date || 'غير مؤرخ')}</td><td class="p-2 font-bold">${escapeHtml(entry.student.name || entry.record.studentName || 'طالب')}</td><td class="p-2">${escapeHtml(entry.record.stage || entry.student.class || '')} · ${escapeHtml(entry.record.section ?? entry.student.section ?? '')} · ${escapeHtml(entry.record.studyType || entry.student.studyType || 'صباحي')}</td><td class="p-2">${escapeHtml(entry.record.subject || '—')}</td><td class="p-2 font-black">${escapeHtml(entry.record.mark || 'غير محدد')}</td></tr>`).join('') : '<tr><td colspan="6" class="p-4 text-center text-xs text-slate-400">لا توجد سجلات سلوك مطابقة للفلاتر المحددة</td></tr>';
+            const labels = ['مميز','متوسط','سيء'];
+            const students = sortStudentsAlphabetically((appState.students || []).filter(student => {
+                if (classValue !== 'all' && !reportRecordMatchesClass({ class: student.class, section: student.section, studyType: student.studyType || 'صباحي' }, student, classValue)) return false;
+                return !query || String(student.name || '').toLocaleLowerCase('ar').includes(query);
+            }));
+            const rows = students.map((student,index) => {
+                const sessions = (appState.behaviorSessions || []).filter(session => reportSubject === 'all' || normalizeReportValue(session.subject) === normalizeReportValue(reportSubject));
+                const summary = summarizeSessionCounts(sessions, student, labels, classValue, fromDate, toDate, '', '');
+                return `<tr class="border-b border-slate-100 text-[10px]"><td class="p-2 text-center font-bold">${index+1}</td><td class="p-2 font-bold">${escapeHtml(student.name || '')}</td><td class="p-2 text-center font-black text-emerald-700">${summary.counts['مميز']}</td><td class="p-2 text-center font-black text-amber-700">${summary.counts['متوسط']}</td><td class="p-2 text-center font-black text-rose-700">${summary.counts['سيء']}</td><td class="p-2 text-center font-black">${escapeHtml(summary.overall)}</td></tr>`;
+            }).join('');
+            tbody.innerHTML = rows || '<tr><td colspan="6" class="p-4 text-center text-xs text-slate-400">لا توجد سجلات سلوك مطابقة للفلاتر المحددة</td></tr>';
         }
 
         function updateActivityEntriesReportRows() {
@@ -3281,14 +3197,16 @@
             const toDate = document.getElementById('rep-activityentries-to')?.value || '';
             const query = String(document.getElementById('rep-activityentries-search')?.value || '').trim().toLocaleLowerCase('ar');
             setPrintHeaderStageLabelUnified('rep-activityentries-stage', classValue);
-            const rows = (appState.studentActivities || []).map(record => ({ record, student: (appState.students || []).find(st => String(st.id) === String(record.studentId)) })).filter(({record,student}) => {
-                if (!record) return false;
-                if (!reportRecordMatchesClass({ ...record, class: record.class || (student && student.class), section: record.section == null ? (student && student.section) : record.section, studyType: record.studyType || (student && student.studyType) || 'صباحي' }, student, classValue)) return false;
-                if (!isWithinReportDateRange(record.date, fromDate, toDate)) return false;
-                const text = `${student?.name || record.studentName || ''} ${record.mark || ''} ${record.date || ''}`.toLocaleLowerCase('ar');
-                return !query || text.includes(query);
-            }).sort((a,b) => String(b.record.date || '').localeCompare(String(a.record.date || '')) || String(a.student?.name || a.record.studentName || '').localeCompare(String(b.student?.name || b.record.studentName || ''), 'ar'));
-            tbody.innerHTML = rows.length ? rows.map(({record,student},index) => `<tr class="border-b border-slate-100 text-[10px]"><td class="p-2 text-center font-bold">${index+1}</td><td class="p-2 whitespace-nowrap">${escapeHtml(record.date || 'غير مؤرخ')}</td><td class="p-2 font-bold">${escapeHtml(student?.name || record.studentName || 'طالب')}</td><td class="p-2">${escapeHtml(record.class || student?.class || '')} · ${escapeHtml(record.section ?? student?.section ?? '')} · ${escapeHtml(record.studyType || student?.studyType || 'صباحي')}</td><td class="p-2 font-black">${escapeHtml(record.mark || 'غير محدد')}</td></tr>`).join('') : '<tr><td colspan="5" class="p-4 text-center text-xs text-slate-400">لا توجد سجلات نشاط مطابقة للفلاتر المحددة</td></tr>';
+            const labels = ['مميز','متوسط','ضعيف'];
+            const students = sortStudentsAlphabetically((appState.students || []).filter(student => {
+                if (classValue !== 'all' && !reportRecordMatchesClass({ class: student.class, section: student.section, studyType: student.studyType || 'صباحي' }, student, classValue)) return false;
+                return !query || String(student.name || '').toLocaleLowerCase('ar').includes(query);
+            }));
+            const rows = students.map((student,index) => {
+                const summary = summarizeSessionCounts(appState.activitySessions, student, labels, classValue, fromDate, toDate, '', '');
+                return `<tr class="border-b border-slate-100 text-[10px]"><td class="p-2 text-center font-bold">${index+1}</td><td class="p-2 font-bold">${escapeHtml(student.name || '')}</td><td class="p-2 text-center font-black text-emerald-700">${summary.counts['مميز']}</td><td class="p-2 text-center font-black text-amber-700">${summary.counts['متوسط']}</td><td class="p-2 text-center font-black text-rose-700">${summary.counts['ضعيف']}</td><td class="p-2 text-center font-black">${escapeHtml(summary.overall)}</td></tr>`;
+            }).join('');
+            tbody.innerHTML = rows || '<tr><td colspan="6" class="p-4 text-center text-xs text-slate-400">لا توجد سجلات نشاط مطابقة للفلاتر</td></tr>';
         }
 
         function updateStudentsByYearReport() {
@@ -3323,9 +3241,9 @@
                             <p class="text-[10px] font-bold text-slate-700">تقارير السجلات والقيود المدرسية والمتابعة للطلبة</p>
                         </div>
 
-                        ${renderReportButton('behavior_entries_report', 'تقرير سجلات السلوك', 'عرض جميع إدخالات تقييم السلوك لكل طالب ضمن تاريخ أو مدة محددة وحسب الصف والشعبة', 'fa-list-check', 'bg-amber-50 text-amber-700')}
-                        ${renderReportButton('activity_entries_report', 'تقرير سجلات النشاط', 'عرض جميع إدخالات تقييم النشاط لكل طالب ضمن تاريخ أو مدة محددة وحسب الصف والشعبة', 'fa-person-running', 'bg-emerald-50 text-emerald-700')}
-                        ${renderReportButton('homework_report', 'تقرير الواجبات', 'تقرير كل واجب مسجل لكل طالب حسب الصف والشعبة والتاريخ مع حالة الإنجاز والملاحظات', 'fa-book-open', 'bg-violet-50 text-violet-700')}
+                        ${renderReportButton('behavior_entries_report', 'تقرير سجلات السلوك', 'إحصاء عدد تقييمات مميز ومتوسط وسيء لكل طالب والتقييم العام حسب الأكثر تكراراً', 'fa-list-check', 'bg-amber-50 text-amber-700')}
+                        ${renderReportButton('activity_entries_report', 'تقرير سجلات النشاط', 'إحصاء عدد تقييمات مميز ومتوسط وضعيف لكل طالب والتقييم العام حسب الأكثر تكراراً', 'fa-person-running', 'bg-emerald-50 text-emerald-700')}
+                        ${renderReportButton('homework_report', 'تقرير سجلات الواجبات', 'إحصاء عدد مكتمل ومكتمل جزئياً وغير مكتمل لكل طالب والتقييم العام حسب الأكثر تكراراً', 'fa-book-open', 'bg-violet-50 text-violet-700')}
                         ${renderReportButton('all_students', 'قائمة جميع الطلبة', 'عرض وطباعة أسماء الطلبة حسب الصف والشعبة ونوع الدراسة المحددة', 'fa-users-line', 'bg-blue-50 text-blue-600')}
                         ${renderReportButton('students_by_section', 'قائمة طلبة حسب شعبة معينة', 'طباعة أسماء الطلاب حسب الصف والشعبة الأكاديمية والدراسة', 'fa-network-wired', 'bg-emerald-50 text-emerald-600')}
                         ${renderReportButton('students_by_year', 'قائمة حسب السنة الدراسية', 'قوائم وقيود الطلبة للعام الدراسي الحالي', 'fa-calendar-check', 'bg-rose-50 text-rose-600')}
@@ -3512,13 +3430,13 @@
                 bodyEl.innerHTML = getPrintableHeader('rep-daily-stage') + `<div class="no-print grid grid-cols-2 gap-2 mb-3 print-hidden-control"><div class="col-span-2"><label class="block text-[10px] font-bold mb-1">الصف والشعبة</label><select id="rep-daily-class" onchange="renderDailyGradesReportRows()" class="w-full bg-slate-50 border p-2 rounded-xl text-xs font-bold"><option value="all">جميع الصفوف والشعب</option>${classSelectOptions}</select></div><div><label class="block text-[10px] font-bold mb-1">الفصل</label><select id="rep-daily-term" onchange="renderDailyGradesReportRows()" class="w-full bg-slate-50 border p-2 rounded-xl text-xs font-bold"><option value="term1">الفصل الأول</option><option value="term2">الفصل الثاني</option></select></div><div><label class="block text-[10px] font-bold mb-1">الشهر</label><select id="rep-daily-month" onchange="renderDailyGradesReportRows()" class="w-full bg-slate-50 border p-2 rounded-xl text-xs font-bold"><option value="1">الأول</option><option value="2">الثاني</option></select></div><button onclick="exportDailyGradesReportCSV()" class="col-span-2 bg-emerald-600 text-white rounded-xl py-2 text-xs font-black"><i class="fa-solid fa-file-csv ml-1"></i>تصدير CSV</button></div><div class="overflow-x-auto"><table class="w-full text-right"><thead class="bg-slate-900 text-amber-400 text-[10px]"><tr><th class="p-2">ت</th><th class="p-2">اسم الطالب</th><th class="p-2">الصف والشعبة</th><th class="p-2">الفصل</th><th class="p-2">الشهر</th><th class="p-2">الدرجة</th><th class="p-2">التاريخ</th></tr></thead><tbody id="daily-grades-report-body"></tbody></table></div>`;
                 renderDailyGradesReportRows();
             } else if (reportKey === 'homework_report') {
-                titleEl.innerText = 'تقرير الواجبات';
+                titleEl.innerText = 'تقرير سجلات الواجبات';
                 iconEl.className = 'fa-solid fa-book-open';
                 bodyEl.innerHTML = getPrintableHeader('rep-homework-stage') + `<div class="no-print grid grid-cols-2 gap-2 mb-3 print-hidden-control">
                     <div class="col-span-2"><label class="block text-[10px] font-bold mb-1">الصف والشعبة والدراسة</label><select id="rep-homework-class" onchange="updateHomeworkReportRows()" class="w-full bg-slate-50 border p-2 rounded-xl text-xs font-bold"><option value="all">جميع الصفوف والشعب</option>${classSelectOptions}</select></div>
                     <div><label class="block text-[10px] font-bold mb-1">التاريخ (اختياري)</label><input id="rep-homework-date" type="date" value="" onchange="updateHomeworkReportRows()" class="w-full bg-slate-50 border p-2 rounded-xl text-xs font-bold"></div>
-                    <div><label class="block text-[10px] font-bold mb-1">البحث عن طالب أو واجب</label><input id="rep-homework-search" type="search" value="" oninput="updateHomeworkReportRows()" placeholder="اسم الطالب أو الواجب" class="w-full bg-slate-50 border p-2 rounded-xl text-xs font-bold"></div>
-                </div><div class="overflow-x-auto"><table class="w-full text-right"><thead class="bg-slate-900 text-amber-400 text-[10px]"><tr><th class="p-2 text-center">ت</th><th class="p-2">التاريخ</th><th class="p-2">اسم الطالب</th><th class="p-2">الصف والشعبة</th><th class="p-2">الواجب</th><th class="p-2">حالة الإنجاز</th><th class="p-2">الملاحظة</th></tr></thead><tbody id="homework-report-body"></tbody></table></div>`;
+                    <div><label class="block text-[10px] font-bold mb-1">البحث عن اسم الطالب</label><input id="rep-homework-search" type="search" value="" oninput="updateHomeworkReportRows()" placeholder="اسم الطالب أو الواجب" class="w-full bg-slate-50 border p-2 rounded-xl text-xs font-bold"></div>
+                </div><div class="overflow-x-auto"><table class="w-full text-right"><thead class="bg-slate-900 text-amber-400 text-[10px]"><tr><th class="p-2 text-center">ت</th><th class="p-2">اسم الطالب</th><th class="p-2 text-center">مكتمل</th><th class="p-2 text-center">مكتمل جزئياً</th><th class="p-2 text-center">غير مكتمل</th><th class="p-2 text-center">التقييم العام</th></tr></thead><tbody id="homework-report-body"></tbody></table></div>`;
                 updateHomeworkReportRows();
             } else if (reportKey === 'behavior_entries_report') {
                 titleEl.innerText = 'تقرير سجلات السلوك';
@@ -3527,8 +3445,8 @@
                     <div class="col-span-2"><label class="block text-[10px] font-bold mb-1">الصف والشعبة ونوع الدراسة</label><select id="rep-behentries-class" onchange="updateBehaviorEntriesReportRows()" class="w-full bg-slate-50 border p-2 rounded-xl text-xs font-bold"><option value="all">جميع الصفوف والشعب</option>${classSelectOptions}</select></div>
                     <div><label class="block text-[10px] font-bold mb-1">من تاريخ</label><input id="rep-behentries-from" type="date" onchange="updateBehaviorEntriesReportRows()" class="w-full bg-slate-50 border p-2 rounded-xl text-xs font-bold"></div>
                     <div><label class="block text-[10px] font-bold mb-1">إلى تاريخ</label><input id="rep-behentries-to" type="date" onchange="updateBehaviorEntriesReportRows()" class="w-full bg-slate-50 border p-2 rounded-xl text-xs font-bold"></div>
-                    <div class="col-span-2"><label class="block text-[10px] font-bold mb-1">البحث عن اسم الطالب أو المادة أو التقييم</label><input id="rep-behentries-search" type="search" oninput="updateBehaviorEntriesReportRows()" placeholder="اكتب للبحث..." class="w-full bg-slate-50 border p-2 rounded-xl text-xs font-bold"></div>
-                </div><div class="overflow-x-auto"><table class="w-full text-right"><thead class="bg-slate-900 text-amber-400 text-[10px]"><tr><th class="p-2 text-center">ت</th><th class="p-2">التاريخ</th><th class="p-2">اسم الطالب</th><th class="p-2">الصف والشعبة</th><th class="p-2">المادة</th><th class="p-2">تقييم السلوك</th></tr></thead><tbody id="behavior-entries-report-body"></tbody></table></div>`;
+                    <div class="col-span-2"><label class="block text-[10px] font-bold mb-1">البحث عن اسم الطالب</label><input id="rep-behentries-search" type="search" oninput="updateBehaviorEntriesReportRows()" placeholder="اكتب للبحث..." class="w-full bg-slate-50 border p-2 rounded-xl text-xs font-bold"></div>
+                </div><div class="overflow-x-auto"><table class="w-full text-right"><thead class="bg-slate-900 text-amber-400 text-[10px]"><tr><th class="p-2 text-center">ت</th><th class="p-2">اسم الطالب</th><th class="p-2 text-center">مميز</th><th class="p-2 text-center">متوسط</th><th class="p-2 text-center">سيء</th><th class="p-2 text-center">التقييم العام</th></tr></thead><tbody id="behavior-entries-report-body"></tbody></table></div>`;
                 updateBehaviorEntriesReportRows();
             } else if (reportKey === 'activity_entries_report') {
                 titleEl.innerText = 'تقرير سجلات النشاط';
@@ -3537,8 +3455,8 @@
                     <div class="col-span-2"><label class="block text-[10px] font-bold mb-1">الصف والشعبة ونوع الدراسة</label><select id="rep-activityentries-class" onchange="updateActivityEntriesReportRows()" class="w-full bg-slate-50 border p-2 rounded-xl text-xs font-bold"><option value="all">جميع الصفوف والشعب</option>${classSelectOptions}</select></div>
                     <div><label class="block text-[10px] font-bold mb-1">من تاريخ</label><input id="rep-activityentries-from" type="date" onchange="updateActivityEntriesReportRows()" class="w-full bg-slate-50 border p-2 rounded-xl text-xs font-bold"></div>
                     <div><label class="block text-[10px] font-bold mb-1">إلى تاريخ</label><input id="rep-activityentries-to" type="date" onchange="updateActivityEntriesReportRows()" class="w-full bg-slate-50 border p-2 rounded-xl text-xs font-bold"></div>
-                    <div class="col-span-2"><label class="block text-[10px] font-bold mb-1">البحث عن اسم الطالب أو التقييم</label><input id="rep-activityentries-search" type="search" oninput="updateActivityEntriesReportRows()" placeholder="اكتب للبحث..." class="w-full bg-slate-50 border p-2 rounded-xl text-xs font-bold"></div>
-                </div><div class="overflow-x-auto"><table class="w-full text-right"><thead class="bg-slate-900 text-amber-400 text-[10px]"><tr><th class="p-2 text-center">ت</th><th class="p-2">التاريخ</th><th class="p-2">اسم الطالب</th><th class="p-2">الصف والشعبة</th><th class="p-2">تقييم النشاط</th></tr></thead><tbody id="activity-entries-report-body"></tbody></table></div>`;
+                    <div class="col-span-2"><label class="block text-[10px] font-bold mb-1">البحث عن اسم الطالب</label><input id="rep-activityentries-search" type="search" oninput="updateActivityEntriesReportRows()" placeholder="اكتب للبحث..." class="w-full bg-slate-50 border p-2 rounded-xl text-xs font-bold"></div>
+                </div><div class="overflow-x-auto"><table class="w-full text-right"><thead class="bg-slate-900 text-amber-400 text-[10px]"><tr><th class="p-2 text-center">ت</th><th class="p-2">اسم الطالب</th><th class="p-2 text-center">مميز</th><th class="p-2 text-center">متوسط</th><th class="p-2 text-center">ضعيف</th><th class="p-2 text-center">التقييم العام</th></tr></thead><tbody id="activity-entries-report-body"></tbody></table></div>`;
                 updateActivityEntriesReportRows();
             }
             // 1. تقرير قائمة الغياب والمجازين
@@ -5003,11 +4921,17 @@
                 iconEl.className = "fa-solid fa-users-gear";
                 renderRegisteredStudentsList(bodyEl);
             } 
-            else if (actionKey === 'manage_student_correspondence') {
-                titleEl.innerText = 'الرسائل والاعتراضات';
-                iconEl.className = 'fa-solid fa-comments';
+            else if (actionKey === 'manage_student_messages') {
+                titleEl.innerText = 'الرسائل';
+                iconEl.className = 'fa-solid fa-envelope';
                 if (modalSubmit) modalSubmit.style.display = 'none';
                 renderTeacherStudentAdminTab('messages');
+            }
+            else if (actionKey === 'manage_student_objections' || actionKey === 'manage_student_correspondence') {
+                titleEl.innerText = 'الاعتراضات';
+                iconEl.className = 'fa-solid fa-file-circle-question';
+                if (modalSubmit) modalSubmit.style.display = 'none';
+                renderTeacherStudentAdminTab('objections');
             }
             else if (actionKey === 'import_students') {
                 titleEl.innerText = "استيراد أسماء الطلبة";
@@ -6105,13 +6029,14 @@
                 const logs = Array.isArray(st.absenceLog)?st.absenceLog.slice().sort((a,b)=>String(b.date||'').localeCompare(String(a.date||''))):[];
                 content = `<div class="grid grid-cols-3 gap-2 mb-3"><div class="bg-white rounded-2xl border p-3 text-center"><p class="text-[10px] text-slate-500">الحضور</p><b class="text-xl text-emerald-700">${Number(st.attendanceCount)||0}</b></div><div class="bg-white rounded-2xl border p-3 text-center"><p class="text-[10px] text-slate-500">الغياب</p><b class="text-xl text-rose-700">${Number(st.absenceCount)||0}</b></div><div class="bg-white rounded-2xl border p-3 text-center"><p class="text-[10px] text-slate-500">الإجازات</p><b class="text-xl text-amber-700">${Number(st.excusedCount)||0}</b></div></div><div class="bg-white rounded-2xl p-3 border border-slate-200"><h4 class="font-black text-xs mb-2">سجل الغياب والإجازات</h4>${logs.length?logs.map(log=>`<div class="flex justify-between border-b last:border-0 py-2 text-[10px]"><span>${escapeHtml(log.date||'')}</span><b class="${log.status==='مجاز'?'text-amber-700':'text-rose-700'}">${escapeHtml(log.status||'غائب')}</b></div>`).join(''):'<p class="text-xs text-slate-400 text-center py-3">لا توجد سجلات غياب مسجلة</p>'}</div>`;
             } else if (activeStudentSection === 'behavior') {
-                const logs = Array.isArray(st.behaviorLog) ? st.behaviorLog.slice().sort((a,b)=>String(b.date||'').localeCompare(String(a.date||''))) : [];
+                const logs = (appState.behaviorSessions || []).filter(session => Object.prototype.hasOwnProperty.call(session.records || {}, String(st.id)) && String((session.records || {})[String(st.id)] || '').trim()).map(session => ({ mark: session.records[String(st.id)], date: session.date || '', subject: session.subject || '', stage: session.className || session.class || st.class, section: session.section || st.section, studyType: session.studyType || st.studyType || 'صباحي' })).sort((a,b)=>String(b.date||'').localeCompare(String(a.date||'')));
+                const latestBehaviorMark = logs.length ? logs[0].mark : 'غير مسجل';
                 const selectedBehavior = ['notes','homework','activity'].includes(activeStudentBehaviorCard) ? activeStudentBehaviorCard : 'behavior';
                 const behaviorCardClass = selectedBehavior === 'behavior' ? 'border-indigo-300 bg-indigo-50 text-indigo-800' : 'border-slate-200 bg-white text-slate-600';
                 const notesCardClass = selectedBehavior === 'notes' ? 'border-amber-300 bg-amber-50 text-amber-800' : 'border-slate-200 bg-white text-slate-600';
                 const homeworkCardClass = selectedBehavior === 'homework' ? 'border-violet-300 bg-violet-50 text-violet-800' : 'border-slate-200 bg-white text-slate-600';
                 const activityCardClass = selectedBehavior === 'activity' ? 'border-emerald-300 bg-emerald-50 text-emerald-800' : 'border-slate-200 bg-white text-slate-600';
-                const behaviorDetails = `<div class="bg-white rounded-2xl border border-indigo-100 p-4"><p class="text-[10px] text-slate-500 font-bold">التقييم السلوكي الحالي</p><h3 class="text-xl font-black text-indigo-800 mt-1">${escapeHtml(st.behavior || 'غير مسجل')}</h3><div class="mt-3 pt-3 border-t border-slate-100"><h4 class="font-black text-xs mb-2">سجل السلوك والمتابعة</h4>${logs.length ? logs.map(log => `<div class="border-b last:border-0 py-2 text-[10px]"><div class="flex justify-between gap-2"><b>${escapeHtml(log.mark || 'متابعة')}</b><span>${escapeHtml(log.date || '')}</span></div><p class="text-slate-500 mt-1">${escapeHtml(log.subject || '')} ${escapeHtml(log.stage || '')}</p></div>`).join('') : '<p class="text-xs text-slate-400 text-center py-3">لا توجد علامات سلوك مسجلة</p>'}</div></div>`;
+                const behaviorDetails = `<div class="bg-white rounded-2xl border border-indigo-100 p-4"><p class="text-[10px] text-slate-500 font-bold">التقييم السلوكي الحالي</p><h3 class="text-xl font-black text-indigo-800 mt-1">${escapeHtml(latestBehaviorMark)}</h3><div class="mt-3 pt-3 border-t border-slate-100"><h4 class="font-black text-xs mb-2">سجل السلوك والمتابعة</h4>${logs.length ? logs.map(log => `<div class="border-b last:border-0 py-2 text-[10px]"><div class="flex justify-between gap-2"><b>${escapeHtml(log.mark || 'متابعة')}</b><span>${escapeHtml(log.date || '')}</span></div><p class="text-slate-500 mt-1">${escapeHtml(log.subject || '')} ${escapeHtml(log.stage || '')}</p></div>`).join('') : '<p class="text-xs text-slate-400 text-center py-3">لا توجد علامات سلوك مسجلة</p>'}</div></div>`;
                 const noteEntries = [];
                 if (String(st.note || '').trim()) noteEntries.push({ text: String(st.note), date: String(st.noteDate || st.noteUpdatedAt || ''), title: 'ملاحظة الأستاذ' });
                 if (Array.isArray(st.notes)) st.notes.forEach(item => {
@@ -6226,28 +6151,36 @@
                 ? (record.direction === 'teacher_to_student' ? (!!String(record.studentReply || '').trim() || (record.replies || []).some(reply => reply && reply.sender === 'student')) : (record.status === 'answered' || (Array.isArray(record.replies) && record.replies.length > 0)))
                 : (record.status === 'answered' || !!String(record.reply || '').trim());
             const filtered = allRecords.filter(record => filter === 'all' || (filter === 'answered' ? isAnswered(record) : !isAnswered(record)));
-            const nav = `<div class="grid grid-cols-2 gap-1 mb-3"><button onclick="renderTeacherStudentAdminTab('messages')" class="py-2 rounded-xl ${activeTab==='messages'?'bg-slate-900 text-amber-400':'bg-sky-50 text-sky-700'} text-[10px] font-black">مراسلات إلى الطلبة (${messages.length})</button><button onclick="renderTeacherStudentAdminTab('objections')" class="py-2 rounded-xl ${activeTab==='objections'?'bg-slate-900 text-amber-400':'bg-rose-50 text-rose-700'} text-[10px] font-black">اعتراضات الدرجات (${objections.length})</button></div>`;
-            const statusNav = `<div class="grid grid-cols-3 gap-1 mb-3"><button onclick="setTeacherCorrespondenceFilter('${activeTab}','all')" class="py-2 rounded-xl border text-[9px] font-black ${filter==='all'?'bg-indigo-700 text-white border-indigo-700':'bg-white text-slate-600 border-slate-200'}">الكل</button><button onclick="setTeacherCorrespondenceFilter('${activeTab}','pending')" class="py-2 rounded-xl border text-[9px] font-black ${filter==='pending'?'bg-amber-100 text-amber-800 border-amber-300':'bg-white text-slate-600 border-slate-200'}">${activeTab==='messages'?'رسائل لم يرد عليها':'اعتراضات لم يرد عليها'}</button><button onclick="setTeacherCorrespondenceFilter('${activeTab}','answered')" class="py-2 rounded-xl border text-[9px] font-black ${filter==='answered'?'bg-emerald-100 text-emerald-800 border-emerald-300':'bg-white text-slate-600 border-slate-200'}">${activeTab==='messages'?'رسائل تم الرد عليها':'اعتراضات تم الرد عليها'}</button></div>`;
+            const pendingLabel = activeTab === 'messages' ? 'لم يتم الرد عليها' : 'اعتراضات بانتظار الرد';
+            const answeredLabel = activeTab === 'messages' ? 'تم الرد عليها' : 'اعتراضات تم الرد عليها';
+            const statusNav = `<div class="grid grid-cols-3 gap-1 mb-3"><button onclick="setTeacherCorrespondenceFilter('${activeTab}','all')" class="py-2 rounded-xl border text-[9px] font-black ${filter==='all'?'bg-indigo-700 text-white border-indigo-700':'bg-white text-slate-600 border-slate-200'}">الكل</button><button onclick="setTeacherCorrespondenceFilter('${activeTab}','pending')" class="py-2 rounded-xl border text-[9px] font-black ${filter==='pending'?'bg-amber-100 text-amber-800 border-amber-300':'bg-white text-slate-600 border-slate-200'}">${pendingLabel}</button><button onclick="setTeacherCorrespondenceFilter('${activeTab}','answered')" class="py-2 rounded-xl border text-[9px] font-black ${filter==='answered'?'bg-emerald-100 text-emerald-800 border-emerald-300':'bg-white text-slate-600 border-slate-200'}">${answeredLabel}</button></div>`;
             if (activeTab === 'messages') {
                 const classOptions = getBehaviorRecordClassOptions();
-                const composer = `<div class="bg-white border border-violet-100 rounded-2xl p-3 mb-3"><h4 class="font-black text-xs text-slate-800 mb-2"><i class="fa-solid fa-paper-plane ml-1 text-violet-600"></i>إرسال رسالة جديدة إلى طالب</h4><div class="space-y-2"><div><label class="block text-[10px] font-black mb-1">الصف والشعبة</label><select id="teacher-message-class" onchange="updateTeacherMessageStudentOptions()" class="w-full bg-slate-50 border rounded-xl p-2 text-xs font-bold">${classOptions}</select></div><div><label class="block text-[10px] font-black mb-1">البحث عن اسم الطالب</label><input id="teacher-message-student-search" type="search" oninput="updateTeacherMessageStudentOptions()" placeholder="اكتب اسم الطالب..." class="w-full bg-slate-50 border rounded-xl p-2 text-xs font-bold"></div><div><label class="block text-[10px] font-black mb-1">الطالب المستلم</label><select id="teacher-message-student" class="w-full bg-slate-50 border rounded-xl p-2 text-xs font-bold"><option value="">اختر الطالب</option></select></div><div><label class="block text-[10px] font-black mb-1">نص الرسالة</label><textarea id="teacher-message-text" rows="3" maxlength="3000" placeholder="اكتب الرسالة التي ستظهر في واجهة الطالب..." class="w-full bg-slate-50 border rounded-xl p-2.5 text-xs font-bold"></textarea></div><button type="button" onclick="sendTeacherMessageToStudent()" class="w-full rounded-xl py-2.5 bg-slate-900 text-amber-400 text-xs font-black"><i class="fa-solid fa-paper-plane ml-1"></i>إرسال إلى الطالب</button></div></div>`;
+                const composer = `<div class="rounded-3xl overflow-hidden border border-violet-200 mb-3 shadow-sm"><div class="bg-gradient-to-l from-slate-900 to-indigo-950 text-white p-3 flex items-center gap-2.5"><span class="w-10 h-10 rounded-2xl bg-violet-400/20 text-violet-200 flex items-center justify-center"><i class="fa-solid fa-comments text-lg"></i></span><div><h4 class="font-black text-xs">مركز المراسلات</h4><p class="text-[9px] text-slate-300 mt-1">أنشئ رسالة، تابع الردود، وعدّل الرسائل المرسلة</p></div></div><div class="bg-white p-3 space-y-2.5"><div><label class="block text-[10px] font-black mb-1 text-slate-600">الصف والشعبة</label><select id="teacher-message-class" onchange="updateTeacherMessageStudentOptions()" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-xs font-bold">${classOptions}</select></div><div><label class="block text-[10px] font-black mb-1 text-slate-600">البحث عن اسم الطالب</label><input id="teacher-message-student-search" type="search" oninput="updateTeacherMessageStudentOptions()" placeholder="ابحث عن المستلم..." class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-xs font-bold"></div><div><label class="block text-[10px] font-black mb-1 text-slate-600">إلى الطالب</label><select id="teacher-message-student" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-xs font-bold"><option value="">اختر الطالب</option></select></div><div><label class="block text-[10px] font-black mb-1 text-slate-600">نص الرسالة</label><textarea id="teacher-message-text" rows="3" maxlength="3000" placeholder="اكتب رسالتك هنا..." class="w-full bg-slate-50 border border-slate-200 rounded-2xl p-3 text-xs font-bold focus:outline-none focus:border-violet-400"></textarea></div><button type="button" onclick="sendTeacherMessageToStudent()" class="w-full rounded-2xl py-3 bg-violet-700 hover:bg-violet-800 text-white text-xs font-black shadow-md"><i class="fa-solid fa-paper-plane ml-1"></i>إرسال الرسالة</button></div></div>`;
                 const recordsHtml = filtered.length ? filtered.map(m => {
                     const student = (appState.students || []).find(st => String(st.id) === String(m.studentId));
                     const toStudent = m.direction === 'teacher_to_student';
                     const answered = isAnswered(m);
                     const safeId = String(m.id).replace(/[^\w-]/g, '_');
-                    const content = `<article class="border border-slate-200 rounded-2xl p-3 mb-2 bg-white"><div class="flex justify-between gap-2"><div><b class="text-xs">${escapeHtml(student?.name || m.studentName || 'طالب')}</b><p class="text-[9px] text-slate-400 mt-1">${escapeHtml(student ? `${student.class} · شعبة ${student.section}` : '')}</p><span class="inline-block mt-1 text-[9px] font-black ${toStudent?'text-violet-700':'text-sky-700'}">${toStudent?'رسالة من الأستاذ إلى الطالب':'رسالة واردة من الطالب'}</span></div><span class="text-[9px] text-slate-400">${escapeHtml(new Date(m.createdAt || Date.now()).toLocaleString('ar-IQ'))}</span></div><span class="inline-block mt-2 text-[9px] font-black rounded-full px-2 py-1 ${answered?'bg-emerald-50 text-emerald-700':'bg-amber-50 text-amber-700'}">${answered?'تم الرد عليها':'لم يرد عليها'}</span><p class="text-xs whitespace-pre-wrap mt-2">${escapeHtml(m.text || '')}</p>${toStudent ? `<div class="grid grid-cols-2 gap-2 mt-2"><button type="button" onclick="editTeacherStudentMessage('${String(m.id).replace(/'/g,'')}')" class="rounded-xl bg-sky-50 text-sky-700 border border-sky-100 py-2 text-[10px] font-black"><i class="fa-solid fa-pen-to-square ml-1"></i>تعديل الرسالة</button><button type="button" onclick="deleteTeacherStudentMessage('${String(m.id).replace(/'/g,'')}')" class="rounded-xl bg-rose-50 text-rose-700 border border-rose-100 py-2 text-[10px] font-black"><i class="fa-solid fa-trash-can ml-1"></i>حذف الرسالة</button></div>${m.studentReply?`<div class="mt-2 p-2 bg-emerald-50 rounded-xl text-xs"><b class="text-emerald-700">رد الطالب</b><p class="mt-1 whitespace-pre-wrap">${escapeHtml(m.studentReply)}</p></div>`:''}` : `${(m.replies || []).map(r => `<div class="mt-2 p-2 bg-emerald-50 rounded-xl text-xs"><b class="text-emerald-700">رد الأستاذ</b><p class="mt-1 whitespace-pre-wrap">${escapeHtml(r.text || '')}</p></div>`).join('')}<textarea id="teacher-reply-${safeId}" rows="2" placeholder="اكتب الرد على الطالب..." class="w-full mt-2 p-2 rounded-xl bg-slate-50 border text-xs"></textarea><button onclick="replyStudentMessage('${String(m.id).replace(/'/g,'')}')" class="w-full bg-slate-900 text-amber-400 py-2 rounded-xl mt-1 text-xs font-black">إرسال الرد إلى واجهة الطالب</button>`}</article>`;
-                    return content;
-                }).join('') : `<div class="p-5 text-center text-xs text-slate-400 bg-white rounded-2xl border">${filter==='pending'?'لا توجد رسائل بانتظار الرد':filter==='answered'?'لا توجد رسائل تم الرد عليها':'لا توجد مراسلات حالياً'}</div>`;
-                body.innerHTML = composer + nav + statusNav + recordsHtml;
+                    const timestamp = escapeHtml(new Date(m.createdAt || Date.now()).toLocaleString('ar-IQ'));
+                    const editing = toStudent && String(editingTeacherMessageId) === String(m.id);
+                    const messageBody = editing
+                        ? `<textarea id="teacher-message-edit-${safeId}" rows="4" maxlength="3000" class="w-full mt-3 p-3 rounded-2xl bg-white border border-violet-200 text-xs font-bold focus:outline-none focus:border-violet-500">${escapeHtml(m.text || '')}</textarea><div class="grid grid-cols-2 gap-2 mt-2"><button type="button" onclick="saveTeacherStudentMessageEdit('${String(m.id).replace(/'/g,'')}')" class="rounded-xl bg-violet-700 text-white py-2 text-[10px] font-black">حفظ التعديل</button><button type="button" onclick="cancelEditTeacherStudentMessage()" class="rounded-xl bg-slate-100 text-slate-600 py-2 text-[10px] font-black">إلغاء</button></div>`
+                        : `<div class="mt-3 rounded-2xl ${toStudent?'bg-violet-50 border border-violet-100':'bg-sky-50 border border-sky-100'} p-3"><p class="text-xs leading-6 font-bold text-slate-800 whitespace-pre-wrap">${escapeHtml(m.text || '')}</p></div>`;
+                    const studentReply = m.studentReply ? `<div class="mr-5 mt-2 rounded-2xl rounded-tr-sm bg-emerald-50 border border-emerald-100 p-3"><div class="flex items-center gap-1 text-[9px] font-black text-emerald-700 mb-1"><i class="fa-solid fa-reply"></i>رد الطالب</div><p class="text-xs whitespace-pre-wrap">${escapeHtml(m.studentReply)}</p></div>` : '';
+                    const replies = (m.replies || []).map(r => `<div class="mr-5 mt-2 rounded-2xl bg-emerald-50 border border-emerald-100 p-3 text-xs"><b class="text-emerald-700">رد الأستاذ</b><p class="mt-1 whitespace-pre-wrap">${escapeHtml(r.text || '')}</p></div>`).join('');
+                    const controls = toStudent ? (editing ? '' : `<div class="grid grid-cols-2 gap-2 mt-3"><button type="button" onclick="editTeacherStudentMessage('${String(m.id).replace(/'/g,'')}')" class="rounded-xl bg-sky-50 text-sky-700 border border-sky-100 py-2.5 text-[10px] font-black"><i class="fa-solid fa-pen-to-square ml-1"></i>تعديل الرسالة</button><button type="button" onclick="deleteTeacherStudentMessage('${String(m.id).replace(/'/g,'')}')" class="rounded-xl bg-rose-50 text-rose-700 border border-rose-100 py-2.5 text-[10px] font-black"><i class="fa-solid fa-trash-can ml-1"></i>حذف الرسالة</button></div>`) : `<textarea id="teacher-reply-${safeId}" rows="2" placeholder="اكتب الرد على الطالب..." class="w-full mt-3 p-3 rounded-2xl bg-slate-50 border border-slate-200 text-xs font-bold">${escapeHtml('')}</textarea><button type="button" onclick="replyStudentMessage('${String(m.id).replace(/'/g,'')}')" class="w-full bg-slate-900 text-amber-300 py-2.5 rounded-xl mt-2 text-[10px] font-black">إرسال الرد إلى واجهة الطالب</button>`;
+                    return `<article class="rounded-3xl border border-slate-200 bg-white p-3.5 mb-3 shadow-sm"><div class="flex items-start justify-between gap-2"><div class="flex items-center gap-2.5 min-w-0"><span class="w-10 h-10 rounded-2xl ${toStudent?'bg-violet-100 text-violet-700':'bg-sky-100 text-sky-700'} flex items-center justify-center shrink-0"><i class="fa-solid ${toStudent?'fa-paper-plane':'fa-user-graduate'}"></i></span><div class="min-w-0"><b class="block text-xs text-slate-800 truncate">${escapeHtml(student?.name || m.studentName || 'طالب')}</b><p class="text-[9px] text-slate-400 mt-1">${escapeHtml(student ? `${student.class} · شعبة ${student.section}` : '')}</p><p class="text-[9px] text-slate-400 mt-0.5">${toStudent?'رسالة صادرة من الأستاذ':'رسالة واردة من الطالب'}</p></div></div><span class="shrink-0 text-[8px] font-black rounded-full px-2 py-1 ${answered?'bg-emerald-50 text-emerald-700':'bg-amber-50 text-amber-700'}">${answered?'تم الرد':'بانتظار الرد'}</span></div><div class="text-[9px] text-slate-400 mt-3"><i class="fa-regular fa-clock ml-1"></i>${timestamp}${m.updatedAt && m.updatedAt !== m.createdAt ? ' · تم التحديث' : ''}</div>${messageBody}${studentReply}${replies}${controls}</article>`;
+                }).join('') : `<div class="p-6 text-center text-xs text-slate-400 bg-white rounded-3xl border border-dashed border-slate-300"><i class="fa-regular fa-comments text-3xl mb-2 block text-slate-300"></i>${filter==='pending'?'لا توجد رسائل بانتظار الرد':filter==='answered'?'لا توجد رسائل تم الرد عليها':'لا توجد مراسلات حالياً'}</div>`;
+                body.innerHTML = composer + statusNav + `<div class="flex items-center justify-between px-1 mb-2"><h4 class="text-xs font-black text-slate-700">سجل المحادثات</h4><span class="text-[9px] text-slate-400">${filtered.length} محادثة</span></div>` + recordsHtml;
                 updateTeacherMessageStudentOptions();
             } else {
-                body.innerHTML = nav + statusNav + (filtered.length ? filtered.map(o => {
+                body.innerHTML = statusNav + (filtered.length ? filtered.map(o => {
                     const student = (appState.students || []).find(st => String(st.id) === String(o.studentId));
                     const answered = isAnswered(o);
                     const safeId = String(o.id).replace(/[^\w-]/g, '_');
-                    return `<article class="border border-slate-200 rounded-2xl p-3 mb-2 bg-white"><div class="flex justify-between gap-2"><div><b class="text-xs">${escapeHtml(student?.name || o.studentName || 'طالب')} · ${escapeHtml(o.gradeKey || 'درجة')}</b><p class="text-[9px] text-slate-400 mt-1">${escapeHtml(student ? `${student.class} · شعبة ${student.section}` : '')}</p></div><span class="text-[9px] font-black rounded-full px-2 py-1 ${answered?'bg-emerald-50 text-emerald-700':'bg-amber-50 text-amber-700'}">${answered?'تم الرد عليها':'لم يرد عليها'}</span></div><p class="text-xs whitespace-pre-wrap mt-2">${escapeHtml(o.message || '')}</p><div class="grid grid-cols-2 gap-2 mt-2"><button type="button" onclick="editTeacherGradeObjection('${String(o.id).replace(/'/g,'')}')" class="rounded-xl bg-sky-50 text-sky-700 border border-sky-100 py-2 text-[10px] font-black">تعديل الاعتراض</button><button type="button" onclick="deleteTeacherGradeObjection('${String(o.id).replace(/'/g,'')}')" class="rounded-xl bg-rose-50 text-rose-700 border border-rose-100 py-2 text-[10px] font-black">حذف الاعتراض</button></div>${o.reply?`<div class="mt-2 p-2 rounded-xl bg-emerald-50 text-xs"><b class="text-emerald-700">الرد السابق</b><p class="mt-1 whitespace-pre-wrap">${escapeHtml(o.reply)}</p></div>`:''}<textarea id="objection-reply-${safeId}" rows="2" placeholder="اكتب إجابة الاعتراض..." class="w-full mt-2 p-2 rounded-xl bg-slate-50 border text-xs">${escapeHtml(o.reply || '')}</textarea><button onclick="answerGradeObjection('${String(o.id).replace(/'/g,'')}')" class="w-full bg-slate-900 text-amber-400 py-2 rounded-xl mt-1 text-xs font-black">حفظ الرد في واجهة الطالب</button></article>`;
-                }).join('') : `<div class="p-5 text-center text-xs text-slate-400 bg-white rounded-2xl border">${filter==='pending'?'لا توجد اعتراضات بانتظار الرد':filter==='answered'?'لا توجد اعتراضات تم الرد عليها':'لا توجد اعتراضات حالياً'}</div>`);
+                    return `<article class="border border-rose-100 rounded-3xl p-3.5 mb-3 bg-white shadow-sm"><div class="flex justify-between gap-2 items-start"><div class="flex items-center gap-2"><span class="w-10 h-10 rounded-2xl bg-rose-50 text-rose-700 flex items-center justify-center"><i class="fa-solid fa-file-circle-question"></i></span><div><b class="text-xs text-slate-800">${escapeHtml(student?.name || o.studentName || 'طالب')}</b><p class="text-[9px] text-slate-400 mt-1">${escapeHtml(student ? `${student.class} · شعبة ${student.section}` : '')} · ${escapeHtml(o.gradeKey || 'درجة')}</p></div></div><span class="text-[9px] font-black rounded-full px-2 py-1 ${answered?'bg-emerald-50 text-emerald-700':'bg-amber-50 text-amber-700'}">${answered?'تم الرد عليها':'لم يرد عليها'}</span></div><div class="mt-3 rounded-2xl bg-rose-50/70 border border-rose-100 p-3"><p class="text-xs whitespace-pre-wrap leading-6">${escapeHtml(o.message || '')}</p></div>${o.reply?`<div class="mt-2 mr-4 p-3 rounded-2xl bg-emerald-50 border border-emerald-100 text-xs"><b class="text-emerald-700">الرد السابق</b><p class="mt-1 whitespace-pre-wrap">${escapeHtml(o.reply)}</p></div>`:''}<div class="grid grid-cols-2 gap-2 mt-3"><button type="button" onclick="editTeacherGradeObjection('${String(o.id).replace(/'/g,'')}')" class="rounded-xl bg-sky-50 text-sky-700 border border-sky-100 py-2 text-[10px] font-black"><i class="fa-solid fa-pen-to-square ml-1"></i>تعديل الاعتراض</button><button type="button" onclick="deleteTeacherGradeObjection('${String(o.id).replace(/'/g,'')}')" class="rounded-xl bg-rose-50 text-rose-700 border border-rose-100 py-2 text-[10px] font-black"><i class="fa-solid fa-trash-can ml-1"></i>حذف الاعتراض</button></div><textarea id="objection-reply-${safeId}" rows="2" placeholder="اكتب إجابة الاعتراض..." class="w-full mt-3 p-3 rounded-2xl bg-slate-50 border border-slate-200 text-xs font-bold">${escapeHtml(o.reply || '')}</textarea><button onclick="answerGradeObjection('${String(o.id).replace(/'/g,'')}')" class="w-full bg-slate-900 text-amber-300 py-2.5 rounded-xl mt-2 text-[10px] font-black">حفظ الرد في واجهة الطالب</button></article>`;
+                }).join('') : `<div class="p-6 text-center text-xs text-slate-400 bg-white rounded-3xl border border-dashed border-slate-300">${filter==='pending'?'لا توجد اعتراضات بانتظار الرد':filter==='answered'?'لا توجد اعتراضات تم الرد عليها':'لا توجد اعتراضات حالياً'}</div>`);
             }
         }
 
@@ -6295,15 +6228,30 @@
         function editTeacherStudentMessage(messageId) {
             const message = (appState.studentMessages || []).find(m => String(m.id) === String(messageId));
             if (!message || message.direction !== 'teacher_to_student') { showToast('لا يمكن تعديل هذه الرسالة من هذا التبويب', 'error'); return; }
-            const updated = prompt(`تعديل الرسالة المرسلة إلى الطالب ${message.studentName || ''}:`, message.text || '');
-            if (updated === null) return;
-            const text = updated.trim();
+            editingTeacherMessageId = String(messageId);
+            renderTeacherStudentAdminTab('messages');
+            const safeId = String(messageId).replace(/[^\w-]/g, '_');
+            document.getElementById('teacher-message-edit-' + safeId)?.focus();
+        }
+
+        function saveTeacherStudentMessageEdit(messageId) {
+            const message = (appState.studentMessages || []).find(m => String(m.id) === String(messageId) && m.direction === 'teacher_to_student');
+            if (!message) { showToast('الرسالة غير موجودة', 'error'); return; }
+            const safeId = String(messageId).replace(/[^\w-]/g, '_');
+            const input = document.getElementById('teacher-message-edit-' + safeId);
+            const text = String(input?.value || '').trim();
             if (!text) { showToast('لا يمكن حفظ رسالة فارغة', 'error'); return; }
             message.text = text;
             message.updatedAt = new Date().toISOString();
+            editingTeacherMessageId = null;
             persistLocalState();
             renderTeacherStudentAdminTab('messages');
-            showToast('تم تعديل الرسالة وتحديثها في واجهة الطالب');
+            showToast('تم تعديل الرسالة في واجهة الأستاذ والطالب');
+        }
+
+        function cancelEditTeacherStudentMessage() {
+            editingTeacherMessageId = null;
+            renderTeacherStudentAdminTab('messages');
         }
 
         function deleteTeacherStudentMessage(messageId) {
@@ -6311,6 +6259,7 @@
             if (!message) { showToast('الرسالة غير موجودة أو ليست رسالة مرسلة من الأستاذ', 'error'); return; }
             if (!confirm(`هل تريد حذف الرسالة المرسلة إلى الطالب ${message.studentName || ''}؟`)) return;
             appState.studentMessages = (appState.studentMessages || []).filter(m => !(String(m.id) === String(messageId) && m.direction === 'teacher_to_student'));
+            if (String(editingTeacherMessageId) === String(messageId)) editingTeacherMessageId = null;
             persistLocalState();
             renderTeacherStudentAdminTab('messages');
             showToast('تم حذف الرسالة من قائمة الأستاذ وواجهة الطالب');
@@ -6332,20 +6281,29 @@
         }
 
         function editTeacherGradeObjection(objectionId) {
-            const obj = (appState.gradeObjections || []).find(o => String(o.id) === String(objectionId));
-            if (!obj) { showToast('الاعتراض غير موجود', 'error'); return; }
-            const gradeKey = prompt('تعديل نوع الدرجة:', obj.gradeKey || 'الدرجة'); if (gradeKey === null) return;
-            const message = prompt('تعديل نص الاعتراض:', obj.message || ''); if (message === null) return;
-            if (!message.trim()) { showToast('لا يمكن حفظ اعتراض فارغ', 'error'); return; }
-            obj.gradeKey = gradeKey.trim() || 'الدرجة'; obj.message = message.trim(); obj.updatedAt = new Date().toISOString();
-            persistLocalState(); renderTeacherStudentAdminTab('objections'); showToast('تم تعديل الاعتراض وتحديثه في واجهة الطالب');
+            const objection = (appState.gradeObjections || []).find(item => String(item.id) === String(objectionId));
+            if (!objection) { showToast('الاعتراض غير موجود', 'error'); return; }
+            const nextGrade = prompt('تعديل عنوان الدرجة أو نوعها:', objection.gradeKey || 'درجة');
+            if (nextGrade === null) return;
+            const nextText = prompt('تعديل نص الاعتراض:', objection.message || '');
+            if (nextText === null) return;
+            if (!nextText.trim()) { showToast('لا يمكن حفظ اعتراض فارغ', 'error'); return; }
+            objection.gradeKey = nextGrade.trim() || objection.gradeKey || 'درجة';
+            objection.message = nextText.trim();
+            objection.updatedAt = new Date().toISOString();
+            persistLocalState();
+            renderTeacherStudentAdminTab('objections');
+            showToast('تم تعديل الاعتراض وتحديثه في القائمة');
         }
+
         function deleteTeacherGradeObjection(objectionId) {
-            const obj = (appState.gradeObjections || []).find(o => String(o.id) === String(objectionId));
-            if (!obj) { showToast('الاعتراض غير موجود', 'error'); return; }
-            if (!confirm(`هل تريد حذف اعتراض الطالب ${obj.studentName || ''}؟`)) return;
-            appState.gradeObjections = (appState.gradeObjections || []).filter(o => String(o.id) !== String(objectionId));
-            persistLocalState(); renderTeacherStudentAdminTab('objections'); showToast('تم حذف الاعتراض من قائمة الأستاذ وواجهة الطالب');
+            const objection = (appState.gradeObjections || []).find(item => String(item.id) === String(objectionId));
+            if (!objection) { showToast('الاعتراض غير موجود', 'error'); return; }
+            if (!confirm(`هل تريد حذف اعتراض الطالب ${objection.studentName || ''}؟`)) return;
+            appState.gradeObjections = (appState.gradeObjections || []).filter(item => String(item.id) !== String(objectionId));
+            persistLocalState();
+            renderTeacherStudentAdminTab('objections');
+            showToast('تم حذف الاعتراض من القائمة وواجهة الطالب');
         }
 
         function answerGradeObjection(objectionId) {
